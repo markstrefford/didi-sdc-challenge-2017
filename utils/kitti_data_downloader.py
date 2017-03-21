@@ -10,7 +10,7 @@
 # --dest-dir  : Destination directory for downloaded files (defaults to /vol/kitti)
 # --csv       : Data file containing the list of files to download (defaults to ./kitti_file_list.txt)
 # --resize    : Resize the images to the specific h x w (for example, --resize=640,197
-# --restart   : Restart with the specified file (see kitti_file_list.txt for the order) - not implemented yet!!
+# --restart   : Restart with the specified file from kitti_file_list.txt (downloads in the order in the csv)
 #
 
 import csv
