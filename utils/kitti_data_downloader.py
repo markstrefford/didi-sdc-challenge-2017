@@ -66,7 +66,6 @@ def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart, resiz
                 print ('Extracting contents of {}'.format(out_file))
                 with zipfile.ZipFile(out_file, 'r') as data_zip:
                     data_zip.extractall(kitti_data_dir)
-                os.remove(out_file)
 
                 if new_size != [0,0]:
                     with zipfile.ZipFile(out_file, 'r') as data_zip:
@@ -76,8 +75,11 @@ def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart, resiz
                                 image = cv2.imread(os.path.join(kitti_data_dir, file))
                                 image = imutils.resize(image, width=resize[0], height=resize[1])
                                 cv2.imwrite(os.path.join(kitti_data_dir, file), image)
+                           
+                os.remove(out_file)
+
             else:
-                print ('Error: {} is not a valid zip file'.format(out_file))
+                print ('\nError: {} is not a valid zip file'.format(out_file))
 
 
 if __name__ == '__main__':
