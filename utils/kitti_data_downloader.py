@@ -9,7 +9,7 @@
 #
 # --dest-dir  : Destination directory for downloaded files (defaults to /vol/kitti)
 # --csv       : Data file containing the list of files to download (defaults to ./kitti_file_list.txt)
-# --resize    : Resize the images to the specific h x w (for example, --resize=(320,96)
+# --resize    : Resize the images to the specific h x w (for example, --resize=640,197
 # --restart   : Restart with the specified file (see kitti_file_list.txt for the order) - not implemented yet!!
 #
 
@@ -20,6 +20,7 @@ import wget
 import zipfile
 import argparse
 import imutils
+from fnmatch import fnmatch
 
 
 kitti_data_url = 'http://kitti.is.tue.mpg.de/kitti/raw_data/'
@@ -32,11 +33,23 @@ def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart, resiz
     def kitti_short_name(filename):
         return ('{}_sync.zip'.format(filename))
 
+    def remove_old_files(dir, wildcard):
+        for file in os.listdir(dir):
+            if fnmatch(file, wildcard):
+                os.remove(os.path.join(dir, file))
+
+
     # Parse resize info
     new_size = [0,0]
     if resize != '':
-        new_size = [int(s) for s in resize[1:-1].split(',')]
+        new_size = [int(s) for s in resize.split(',')]
+        print ('Downloaded images will be resized to {}'.format(resize))
 
+    # Clear up any old zip and tmp files first...
+    remove_old_files(kitti_data_dir, '*.zip')
+    remove_old_files(kitti_data_dir, '*.tmp')
+
+    # Download the files from the csv
     with open(csv_file, 'rb') as file:
         file_reader = csv.reader(file)
         for filename in file_reader:
@@ -59,9 +72,10 @@ def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart, resiz
                     with zipfile.ZipFile(out_file, 'r') as data_zip:
                         print('Resizing images from {}'.format(out_file))
                         for file in data_zip.namelist():
-                            image = cv2.imread(file)
-                            image = imutils.resize(image, width=resize[0], height=resize[1])
-                            cv2.imwrite(file, image)
+                            if fnmatch(file, '*.png'):      # Check for images!!
+                                image = cv2.imread(os.path.join(kitti_data_dir, file))
+                                image = imutils.resize(image, width=resize[0], height=resize[1])
+                                cv2.imwrite(os.path.join(kitti_data_dir, file), image)
             else:
                 print ('Error: {} is not a valid zip file'.format(out_file))
 
