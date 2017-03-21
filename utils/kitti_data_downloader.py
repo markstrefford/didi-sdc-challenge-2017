@@ -73,13 +73,13 @@ def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart, resiz
                         for file in data_zip.namelist():
                             if fnmatch(file, '*.png'):      # Check for images!!
                                 image = cv2.imread(os.path.join(kitti_data_dir, file))
-                                image = imutils.resize(image, width=resize[0], height=resize[1])
+                                image = imutils.resize(image, width=new_size[0], height=new_size[1])
                                 cv2.imwrite(os.path.join(kitti_data_dir, file), image)
-                           
-                os.remove(out_file)
 
             else:
                 print ('\nError: {} is not a valid zip file'.format(out_file))
+
+            os.remove(out_file)
 
 
 if __name__ == '__main__':
