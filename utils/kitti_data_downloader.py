@@ -26,7 +26,7 @@ from fnmatch import fnmatch
 kitti_data_url = 'http://kitti.is.tue.mpg.de/kitti/raw_data/'
 #kitti_data_dir = '/vol/kitti/'
 
-def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart, resize):
+def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart_file, resize):
     def kitti_full_name(filename):
         return ('{}/{}_sync.zip'.format(filename, filename))
 
@@ -45,6 +45,11 @@ def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart, resiz
         new_size = [int(s) for s in resize.split(',')]
         print ('Downloaded images will be resized to {}'.format(resize))
 
+    # Handle restarts
+    restart_flag = False
+    if restart_file != '':
+        restart_flag = True
+
     # Clear up any old zip and tmp files first...
     remove_old_files(kitti_data_dir, '*.zip')
     remove_old_files(kitti_data_dir, '*.tmp')
@@ -53,33 +58,39 @@ def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart, resiz
     with open(csv_file, 'rb') as file:
         file_reader = csv.reader(file)
         for filename in file_reader:
-            file = os.path.join(kitti_data_dir, kitti_short_name(filename[0]))
-            url = kitti_data_url + kitti_full_name(filename[0])
-            print ("Downloading file {} from {}".format(file, url))
 
-            out_file = wget.download(url, file)
-            if out_file != file:
-                print ('Error downloading from {}'.format(url))
-                continue
+            # Handle restarts
+            if restart_flag == True and filename[0] == restart_file:
+                restart_flag = False
 
-            if zipfile.is_zipfile(out_file):
-                print ('Extracting contents of {}'.format(out_file))
-                with zipfile.ZipFile(out_file, 'r') as data_zip:
-                    data_zip.extractall(kitti_data_dir)
+            if restart_flag == False:
+                file = os.path.join(kitti_data_dir, kitti_short_name(filename[0]))
+                url = kitti_data_url + kitti_full_name(filename[0])
+                print ("Downloading file {} from {}".format(file, url))
 
-                if new_size != [0,0]:
+                out_file = wget.download(url, file)
+                if out_file != file:
+                    print ('Error downloading from {}'.format(url))
+                    continue
+
+                if zipfile.is_zipfile(out_file):
+                    print ('Extracting contents of {}'.format(out_file))
                     with zipfile.ZipFile(out_file, 'r') as data_zip:
-                        print('Resizing images from {}'.format(out_file))
-                        for file in data_zip.namelist():
-                            if fnmatch(file, '*.png'):      # Check for images!!
-                                image = cv2.imread(os.path.join(kitti_data_dir, file))
-                                image = imutils.resize(image, width=new_size[0], height=new_size[1])
-                                cv2.imwrite(os.path.join(kitti_data_dir, file), image)
+                        data_zip.extractall(kitti_data_dir)
 
-            else:
-                print ('\nError: {} is not a valid zip file'.format(out_file))
+                    if new_size != [0,0]:
+                        with zipfile.ZipFile(out_file, 'r') as data_zip:
+                            print('Resizing images from {}'.format(out_file))
+                            for file in data_zip.namelist():
+                                if fnmatch(file, '*.png'):      # Check for images!!
+                                    image = cv2.imread(os.path.join(kitti_data_dir, file))
+                                    image = imutils.resize(image, width=new_size[0], height=new_size[1])
+                                    cv2.imwrite(os.path.join(kitti_data_dir, file), image)
 
-            os.remove(out_file)
+                else:
+                    print ('\nError: {} is not a valid zip file'.format(out_file))
+
+                os.remove(out_file)
 
 
 if __name__ == '__main__':
