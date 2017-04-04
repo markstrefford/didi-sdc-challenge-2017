@@ -16,7 +16,7 @@ lidar_size = (42034, 5)
 fig = mlab.figure(bgcolor=(0, 0, 0), size=(500, 300))
 lidar = np.zeros(lidar_size)
 plt = mlab.points3d(lidar[:, 0], lidar[:, 1], lidar[:, 2],
-                    np.ones(lidar.shape[0]), #lidar[:, 0] ** 2 + lidar[:, 1] ** 2,
+                    np.ones(lidar.shape[0])*128, #lidar[:, 0] ** 2 + lidar[:, 1] ** 2,
                     mode="point",
                     colormap='spectral',
                     figure=fig,
