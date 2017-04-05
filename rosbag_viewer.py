@@ -100,6 +100,7 @@ for image, lidar in load_rosbag_data('approach_3.bag'):
     cv2.imshow('Camera', image)
     cv2.waitKey(1)
 
+cv2.waitKey()
 cv2.destroyAllWindows()
 
 

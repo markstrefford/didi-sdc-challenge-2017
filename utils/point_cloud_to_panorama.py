@@ -13,7 +13,6 @@ def scale_to_255(a, min, max, dtype=np.uint8):
     """
     return (((a - min) / float(max - min)) * 255).astype(dtype)
 
-
 # ==============================================================================
 #                                                        POINT_CLOUD_TO_PANORAMA
 # ==============================================================================
@@ -87,16 +86,17 @@ def point_cloud_to_panorama(points,
     y_img = np.trunc(y_img - y_min).astype(np.int32)
 
     # CLIP DISTANCES
-    d_points = np.clip(d_points, a_min=d_range[0], a_max=d_range[1])
+    #d_points = np.clip(d_points, a_min=d_range[0], a_max=d_range[1])
 
     # CONVERT TO IMAGE ARRAY
     img = np.zeros([y_max + 1, x_max + 1], dtype=np.uint8)
-    #print y_img, x_img, img.shape, d_points.shape
-    #img[y_img, x_img] = scale_to_255(d_points, min=d_range[0], max=d_range[1])
     d_scaled = scale_to_255(d_points, min=d_range[0], max=d_range[1])
+    r_scaled = scale_to_255(r_points, min=min(r_points), max=max(r_points))
+    #print min(y_img), max(y_img), min(r_scaled), max(r_scaled)
+    #img[y_img, x_img] = scale_to_255(d_points, min=d_range[0], max=d_range[1])
     for idx in range(d_scaled.shape[0]):
         if y_img[idx] <= y_max:
             img[y_img[idx], x_img[idx]] = d_scaled[idx]
-        else:
-            print 'Out of bounds: idx {}, y {}, x {}, d {}'.format(idx, y_img[idx], x_img[idx], d_scaled[idx])
+        #else:
+            #print 'Out of bounds: idx {}, y {}, x {}, d {}'.format(idx, y_img[idx], x_img[idx], d_scaled[idx])
     return img
