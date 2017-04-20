@@ -1,5 +1,5 @@
 #
-# Script from http://ronny.rest/blog/post_2017_04_03_point_cloud_panorama/
+# Code based on  http://ronny.rest/blog/post_2017_04_03_point_cloud_panorama/
 #
 
 import numpy as np

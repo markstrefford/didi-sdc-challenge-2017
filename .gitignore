@@ -1,6 +1,6 @@
 data/
 *.zip
 .idea/
-
+*.bag
 .ipynb_checkpoints/
 *.pyc
