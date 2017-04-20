@@ -10,7 +10,7 @@ from mayavi import mlab
 import numpy as np
 from utils import point_cloud_to_panorama
 
-bag_file_dir = '/media/sf_vol/didi/Didi-Training-Release-1'
+bag_file_dir = '/media/sf_vol/didi/dataset2/'
 image_size = (512, 1400, 3)
 # lidar_size = (42034, 5)
 #
@@ -80,7 +80,7 @@ center_y = size[1]/2
 center_z = 128
 color_b, color_g = 240, 240  # Change later?
 
-for image, lidar in load_rosbag_data('approach_3.bag'):
+for image, lidar in load_rosbag_data('15pc.bag'):
     lidar_top = np.zeros((size[0],size[1], 3))
     # Render the pointmap using np/cv2
     # See http://ronny.rest/tutorials/module/pointclouds_01/point_cloud_coordinates/

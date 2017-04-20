@@ -4,3 +4,4 @@ data/
 *.bag
 .ipynb_checkpoints/
 *.pyc
+build/
