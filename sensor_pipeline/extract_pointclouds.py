@@ -29,7 +29,7 @@ import sensor_msgs.point_cloud2 as pc2
 
 from bag_topic_def import *
 from bag_utils import *
-from generate_tracklet import *
+# from generate_tracklet import *
 
 
 def get_outdir(base_dir, name=''):
