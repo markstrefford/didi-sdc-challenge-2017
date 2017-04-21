@@ -52,4 +52,4 @@ The following steps will set up the ROS environment to perform predictions on in
 ## Improvements / Next steps
 
 1. Rewrite the code in C
-1. 
+1. Write up a report on my findings
