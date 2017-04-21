@@ -267,16 +267,16 @@ def main():
     filter_topics = POINTCLOUD2_TOPICS                # TODO - Add in other topics I need here
 
     # For bag sets that may have missing metadata.csv file
-    # default_metadata = [{
-    #     'obstacle_name': 'obs1',
-    #     'object_type': 'Car',
-    #     'gps_l': 2.032,
-    #     'gps_w': 1.4478,
-    #     'gps_h': 1.6256,
-    #     'l': 4.2418,
-    #     'w': 1.4478,
-    #     'h': 1.5748,
-    # }]
+    default_metadata = [{
+        'obstacle_name': 'obs1',
+        'object_type': 'Car',
+        'gps_l': 2.032,
+        'gps_w': 1.4478,
+        'gps_h': 1.6256,
+        'l': 4.2418,
+        'w': 1.4478,
+        'h': 1.5748,
+    }]
 
     # #FIXME scan from bag info in /obstacles/ topic path
     # OBSTACLES = ['obs1']
