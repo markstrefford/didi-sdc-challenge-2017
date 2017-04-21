@@ -499,7 +499,7 @@ def main():
                 if not bs.metadata:
                     print('Warning: Default metadata used, metadata.csv file should be with .bag files.')
                 for x in md:
-                    if x['obstacle_name'] == obs_name:
+                    if x['obstacle_name'] == 'car': #obs_name:  # TODO Is this section needed?
                         mdr = x
 
                 # obs_tracklet = Tracklet(
