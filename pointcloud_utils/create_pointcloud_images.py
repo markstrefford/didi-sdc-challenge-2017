@@ -91,7 +91,6 @@ if __name__ == '__main__':
         #    draw_didi_boxes3d(fig, boxes3d)
         #    draw_box3d_on_top(top_img, boxes3d, color=(255,255,255))
 
-
         azimuth,elevation,distance,focalpoint = MM_PER_VIEW1
         mlab.view(azimuth,elevation,distance,focalpoint)
         #
