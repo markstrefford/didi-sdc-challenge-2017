@@ -162,7 +162,7 @@ def lidar_to_top(lidar):
         top_image = top_image/max_value *255
         top_image = np.dstack((top_image, top_image, top_image)).astype(np.uint8)
 
-    print ('lidar_to_top(): top.shape={}, top_img.shape={}'.format(top.shape, top_img.shape))
+    print ('lidar_to_top(): top.shape={}, top_img.shape={}'.format(top.shape, top_image.shape))
 
     return top, top_image
 
