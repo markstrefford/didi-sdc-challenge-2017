@@ -8,7 +8,7 @@ import sensor_msgs.point_cloud2 as pc2
 from cv_bridge import CvBridge
 from mayavi import mlab
 import numpy as np
-from utils import point_cloud_to_panorama
+from scripts import point_cloud_to_panorama
 
 bag_file_dir = '/media/sf_vol/didi/dataset2/'
 image_size = (512, 1400, 3)

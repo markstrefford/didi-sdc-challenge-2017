@@ -19,7 +19,7 @@ import cv2
 import mayavi.mlab as mlab
 
 
-from net.utility.draw import *
+from utils.draw import *
 
 
 ## save mpg:

@@ -23,7 +23,7 @@ import imutils
 from fnmatch import fnmatch
 
 
-kitti_data_url = 'http://kitti.is.tue.mpg.de/kitti/raw_data/'
+kitti_data_url = 'http://scripts.is.tue.mpg.de/scripts/raw_data/'
 #kitti_data_dir = '/vol/kitti/'
 
 def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart_file, resize):
@@ -94,9 +94,9 @@ def download_kitti_data(kitti_data_url, csv_file, kitti_data_dir, restart_file, 
 
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser(description='Download kitti dataset')
+    parser = argparse.ArgumentParser(description='Download scripts dataset')
     parser.add_argument('--dest-dir', '-d', action='store', dest='kitti_data_dir',
-                        default='/vol/kitti/', help='Target directory for downloaded kitti dataset')
+                        default='/vol/scripts/', help='Target directory for downloaded scripts dataset')
     parser.add_argument('--resize', '-s', action='store', dest='resize',
                         default='', help='Resize downloaded images to reduce disk storage requirements')
     parser.add_argument('--restart', '-r', action='store', dest='restart',
