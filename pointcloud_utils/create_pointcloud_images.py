@@ -67,7 +67,8 @@ if __name__ == '__main__':
     avi_file_surround = base_dir + '/processed/mark-surround-box.avi'
 
     # TODO - Sort out error if directory exists!!
-    os.makedirs(mark_dir) #, exist_ok=True)
+    os.makedirs(mark_dir_top) #, exist_ok=True)
+    os.makedirs(mark_dir_surround) #, exist_ok=True)
     os.makedirs(lidar_top_dir) #, exist_ok=True)
     os.makedirs(lidar_top_img_dir) #, exist_ok=True)
     os.makedirs(lidar_surround_dir) #, exist_ok=True)
