@@ -71,8 +71,6 @@ def top_to_lidar_coords(xx,yy):
 ## lidar to top ##
 def lidar_to_top(lidar):
 
-    print ('lidar_to_top(lidar)')
-    print (lidar.shape)
     idx = np.where (lidar['x']>TOP_X_MIN)
     lidar = lidar[idx]
     idx = np.where (lidar['x']<TOP_X_MAX)
@@ -88,7 +86,6 @@ def lidar_to_top(lidar):
     idx = np.where (lidar['z']<TOP_Z_MAX)
     lidar = lidar[idx]
 
-    print (lidar.shape)
     x = lidar['x']
     y = lidar['y']
     z = lidar['z']
@@ -164,8 +161,6 @@ def lidar_to_top(lidar):
         max_value = np.max(np.log(top_image+0.001))
         top_image = top_image/max_value *255
         top_image = np.dstack((top_image, top_image, top_image)).astype(np.uint8)
-
-
 
     return top, top_image
 

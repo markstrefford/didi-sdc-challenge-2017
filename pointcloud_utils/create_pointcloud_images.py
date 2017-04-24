@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
         lidar = np.load(lidar_file)
         top, top_img = lidar_to_top(lidar)
-        boxes3d = np.load(boxes3d_file)
+        #boxes3d = np.load(boxes3d_file)
 
         #save
         cv2.imwrite(top_img_file,top_img)
@@ -87,9 +87,9 @@ if __name__ == '__main__':
         mlab.clf(fig)
         draw_didi_lidar(fig, lidar, is_grid=1, is_axis=1)
 
-        if len(boxes3d)!=0:
-            draw_didi_boxes3d(fig, boxes3d)
-            draw_box3d_on_top(top_img, boxes3d, color=(255,255,255))
+        #if len(boxes3d)!=0:
+        #    draw_didi_boxes3d(fig, boxes3d)
+        #    draw_box3d_on_top(top_img, boxes3d, color=(255,255,255))
 
 
         azimuth,elevation,distance,focalpoint = MM_PER_VIEW1
