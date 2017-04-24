@@ -14,6 +14,8 @@ See Bo li's paper:
 
 import os
 
+import sys; sys.path = [''] + sys.path  # Consistency for imports between modules and running as a script
+
 # num libs
 import math
 import random
@@ -31,8 +33,8 @@ import argparse
 #from pointcloud_utils.lidar import *
 #from pointcloud_utils.lidar_top import *
 #from pointcloud_utils.lidar_surround import *
-from lidar_top import *
-from lidar_surround import *
+from pointcloud_utils.lidar_top import *
+from pointcloud_utils.lidar_surround import *
 
 # main #################################################################
 # for demo data:  /root/share/project/didi/data/didi/didi-2/Out/1/15
