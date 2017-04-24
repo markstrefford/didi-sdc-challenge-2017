@@ -2,7 +2,7 @@ prefix=/home/mark/Development/didi-sdc-challenge-2017/ros_packages/devel
 
 Name: sdc_obstacle_detector
 Description: Description of sdc_obstacle_detector
-Version: 0.0.0
+Version: 0.0.1
 Cflags: 
 Libs: -L/home/mark/Development/didi-sdc-challenge-2017/ros_packages/devel/lib 
 Requires: 
