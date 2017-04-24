@@ -3,6 +3,7 @@
 import cv2
 import os
 import numpy as np
+import glob
 
 def imshow(name, image, resize=1):
     H,W = image.shape[0:2]
@@ -24,10 +25,10 @@ def draw_shadow_text(img, text, pt,  fontScale, color, thickness, color1=None, t
 
 
 
-def dir_to_avi(avi_file, png_dir):
+def dir_to_avi(avi_file, png_dir, show_images):
 
     tmp_dir = '~temp_png'
-    os.makedirs(tmp_dir, exist_ok=True)
+    os.makedirs(tmp_dir) #, exist_ok=True)
 
     for i, file in enumerate(sorted(glob.glob(png_dir + '/*.png'))):
         name = os.path.basename(file).replace('.png','')
@@ -37,8 +38,9 @@ def dir_to_avi(avi_file, png_dir):
         tmp_file = tmp_dir + '/%06d.png'%i
         img = cv2.imread(png_file,1)
         draw_shadow_text(img, 'timestamp='+name.replace('_',':'), (5,20),  0.5, (225,225,225), 1)
-        imshow('img',img)
-        cv2.waitKey(1)
+        if show_images:
+            imshow('img',img)
+            cv2.waitKey(1)
         cv2.imwrite(tmp_file,img)
 
 

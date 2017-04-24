@@ -107,7 +107,7 @@ if __name__ == '__main__':
         #save
         cv2.imwrite(mark_file,top_img)
 
-    dir_to_avi(avi_file, mark_dir)
+    dir_to_avi(avi_file, mark_dir, show_images)
 
 
 
