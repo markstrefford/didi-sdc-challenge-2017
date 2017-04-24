@@ -29,9 +29,10 @@ import mayavi.mlab as mlab
 import argparse
 
 #from pointcloud_utils.lidar import *
-from pointcloud_utils.lidar_top import *
-from pointcloud_utils.lidar_surround import *
-
+#from pointcloud_utils.lidar_top import *
+#from pointcloud_utils.lidar_surround import *
+from pointcloud_utils import lidar_top
+from pointcloud_utils import lidar_surround
 
 # main #################################################################
 # for demo data:  /root/share/project/didi/data/didi/didi-2/Out/1/15
