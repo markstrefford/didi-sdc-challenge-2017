@@ -1,4 +1,4 @@
-from net.common import *
+#from net.common import *
 
 def imshow(name, image, resize=1):
     H,W = image.shape[0:2]
