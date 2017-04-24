@@ -46,10 +46,12 @@ if __name__ == '__main__':
         help='Output folder')
     parser.add_argument('-i', '--indir', type=str, nargs='?', default='/data',
         help='Input folder where pointclouds are located')
+    parser.add_argument('-p', '--pc-only', dest='pc_only', action='store_true', help='Pointclouds only, no images displayed')
     parser.set_defaults(msg_only=False)
     parser.set_defaults(debug=False)
     args = parser.parse_args()
 
+    show_images = False if args.pc_only else True
 
     base_dir          = args.indir
     lidar_dir         = base_dir + '/pointcloud'
@@ -98,8 +100,9 @@ if __name__ == '__main__':
         #mlab.view(azimuth,elevation,distance,focalpoint)
         #
         #mlab.show(1)
-        imshow('top_img',top_img,1)
-        cv2.waitKey(1)
+        if show_images:
+            imshow('top_img',top_img,1)
+            cv2.waitKey(1)
 
         #save
         cv2.imwrite(mark_file,top_img)
