@@ -29,7 +29,7 @@ For each training bag, follow the following steps:
 
 1. Run the `bag-to-kitti.sh` script from the [Udacity provided code](https://github.com/udacity/didi-competition/tree/master/tracklets)
 1. Follow the [ROS instructions here](https://github.com/udacity/didi-competition/tree/master/tracklets) to create a bag containing Velodyne points 
-1. Run the script `extract_pointclouds.py` with the pointcloud bag generated above and the same output directory used for `bag_to_kitti.sh` previously.
+1. Run the script `extract_pointclouds.py` with the pointcloud bag generated above and the same output directory used for `bag_to_kitti.sh` previously.  Note this will also extract Radar points if they are included in the bag.
 
 ### Training the model
 
