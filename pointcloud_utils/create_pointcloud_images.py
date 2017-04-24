@@ -55,17 +55,23 @@ if __name__ == '__main__':
 
     base_dir          = args.indir
     lidar_dir         = base_dir + '/pointcloud'
-    radar_dir         = base_dir + '/radar_pointcloud'   # TODO - add in radar pointclouds later
+    radar_dir         = base_dir + '/radar_pointcloud'
     gt_boxes3d_dir    = base_dir + '/processed/gt_boxes3d'
     lidar_top_dir     = base_dir + '/processed/lidar_top'
     lidar_top_img_dir = base_dir + '/processed/lidar_top_img'
-    mark_dir          = base_dir + '/processed/mark-top-box'
-    avi_file          = base_dir + '/processed/mark-top-box.avi'
+    mark_dir_top      = base_dir + '/processed/mark-top-box'
+    avi_file_top      = base_dir + '/processed/mark-top-box.avi'
+    lidar_surround_dir     = base_dir + '/processed/lidar_surround'
+    lidar_surround_img_dir = base_dir + '/processed/lidar_surround_img'
+    mark_dir_surround = base_dir + '/processed/mark-surround-box'
+    avi_file_surround = base_dir + '/processed/mark-surround-box.avi'
 
     # TODO - Sort out error if directory exists!!
     os.makedirs(mark_dir) #, exist_ok=True)
     os.makedirs(lidar_top_dir) #, exist_ok=True)
     os.makedirs(lidar_top_img_dir) #, exist_ok=True)
+    os.makedirs(lidar_surround_dir) #, exist_ok=True)
+    os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
 
     #fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
     for file in sorted(glob.glob(lidar_dir + '/*.npy')):
@@ -74,18 +80,25 @@ if __name__ == '__main__':
         lidar_file    = lidar_dir +'/'+name+'.npy'
         top_file      = lidar_top_dir +'/'+name+'.npy'
         top_img_file  = lidar_top_img_dir +'/'+name+'.png'
-        mark_file     = mark_dir +'/'+name+'.png'
+        mark_file_top = mark_dir_top +'/'+name+'.png'
+        surround_file = lidar_surround_dir + '/' + name + '.npy'
+        surround_img_file  = lidar_surround_img_dir + '/' + name + '.png'
+        mark_file_surround = mark_dir_top +'/'+name+'.png'
         boxes3d_file  = gt_boxes3d_dir+'/'+name+'.npy'
 
         # TODO - lidar_to_surround()
 
         lidar = np.load(lidar_file)
         top, top_img = lidar_to_top(lidar)
+        surround, surround_img = lidar_to_surround(lidar)
+
         #boxes3d = np.load(boxes3d_file)
 
         #save
         cv2.imwrite(top_img_file,top_img)
         np.save(top_file,top)
+        cv2.imwrite(surround_img_file, surround_img)
+        np.save(surround_file,surround)
 
         #show
         #print ('main(): show mlab images')
@@ -102,12 +115,15 @@ if __name__ == '__main__':
         #mlab.show(1)
         if show_images:
             imshow('top_img',top_img,1)
+            imshow('surrond_img',surround_img,3)
             cv2.waitKey(1)
 
         #save
-        cv2.imwrite(mark_file,top_img)
+        cv2.imwrite(mark_file_top,top_img)
+        cv2.imwrite(mark_file_surround,surround_img)
 
-    dir_to_avi(avi_file, mark_dir, show_images)
+    dir_to_avi(avi_file_top, mark_dir_top, show_images)
+    dir_to_avi(avi_file_surround, mark_dir_surround, show_images)
 
 
 
