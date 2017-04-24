@@ -32,7 +32,8 @@ np.random.seed(SEED)
 import cv2
 import mayavi.mlab as mlab
 
-from pointcloud_utils.lidar import *
+#from pointcloud_utils.lidar import *
+from lidar import *
 
 ##
 
