@@ -29,7 +29,7 @@ import mayavi.mlab as mlab
 import argparse
 
 #from pointcloud_utils.lidar import *
-from pointcloud_utils.lidar_top.py import *
+from pointcloud_utils.lidar_top import *
 from pointcloud_utils.lidar_surround import *
 
 
