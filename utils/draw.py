@@ -8,7 +8,7 @@ def imshow(name, image, resize=1):
     H,W = image.shape[0:2]
     cv2.namedWindow(name, cv2.WINDOW_NORMAL)
     cv2.imshow(name, image.astype(np.uint8))
-    cv2.resizeWindow(name, round(resize*W), round(resize*H))
+    cv2.resizeWindow(name, int(round(resize*W)), int(round(resize*H)))
 
 
 

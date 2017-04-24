@@ -80,10 +80,12 @@ if __name__ == '__main__':
         #boxes3d = np.load(boxes3d_file)
 
         #save
+        print ('main(): save top and top_img')
         cv2.imwrite(top_img_file,top_img)
         np.save(top_file,top)
 
         #show
+        print ('main(): show mlab images')
         mlab.clf(fig)
         draw_didi_lidar(fig, lidar, is_grid=1, is_axis=1)
 
