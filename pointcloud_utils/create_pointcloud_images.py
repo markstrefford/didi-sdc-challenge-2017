@@ -59,11 +59,13 @@ if __name__ == '__main__':
     lidar_top_img_dir = base_dir + '/processed/lidar_top_img'
     mark_dir          = base_dir + '/processed/mark-top-box'
     avi_file          = base_dir + '/processed/mark-top-box.avi'
+
+    # TODO - Sort out error if directory exists!!
     os.makedirs(mark_dir) #, exist_ok=True)
     os.makedirs(lidar_top_dir) #, exist_ok=True)
     os.makedirs(lidar_top_img_dir) #, exist_ok=True)
 
-    fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
+    #fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
     for file in sorted(glob.glob(lidar_dir + '/*.npy')):
         name = os.path.basename(file).replace('.npy','')
 
@@ -80,23 +82,22 @@ if __name__ == '__main__':
         #boxes3d = np.load(boxes3d_file)
 
         #save
-        print ('main(): save top and top_img')
         cv2.imwrite(top_img_file,top_img)
         np.save(top_file,top)
 
         #show
-        print ('main(): show mlab images')
-        mlab.clf(fig)
-        draw_didi_lidar(fig, lidar, is_grid=1, is_axis=1)
+        #print ('main(): show mlab images')
+        #mlab.clf(fig)
+        #draw_didi_lidar(fig, lidar, is_grid=1, is_axis=1)
 
         #if len(boxes3d)!=0:
         #    draw_didi_boxes3d(fig, boxes3d)
         #    draw_box3d_on_top(top_img, boxes3d, color=(255,255,255))
 
-        azimuth,elevation,distance,focalpoint = MM_PER_VIEW1
-        mlab.view(azimuth,elevation,distance,focalpoint)
+        #azimuth,elevation,distance,focalpoint = MM_PER_VIEW1
+        #mlab.view(azimuth,elevation,distance,focalpoint)
         #
-        mlab.show(1)
+        #mlab.show(1)
         imshow('top_img',top_img,1)
         cv2.waitKey(1)
 

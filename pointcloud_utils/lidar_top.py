@@ -162,8 +162,6 @@ def lidar_to_top(lidar):
         top_image = top_image/max_value *255
         top_image = np.dstack((top_image, top_image, top_image)).astype(np.uint8)
 
-    print ('lidar_to_top(): top.shape={}, top_img.shape={}'.format(top.shape, top_image.shape))
-
     return top, top_image
 
 ## drawing ####
@@ -242,69 +240,3 @@ def draw_box3d_on_top(image, boxes3d, color=(255,255,255)):
         cv2.rectangle(image,(x1,y1),(x2,y2),color,1,cv2.LINE_AA)
 
 
-
-# # main #################################################################
-# # for demo data:  /root/share/project/didi/data/didi/didi-2/Out/1/15
-#
-# if __name__ == '__main__':
-#
-#     parser = argparse.ArgumentParser(description='Convert point clouds to top and surround views for training.')
-#     parser.add_argument('-o', '--outdir', type=str, nargs='?', default='/output',
-#         help='Output folder')
-#     parser.add_argument('-i', '--indir', type=str, nargs='?', default='/data',
-#         help='Input folder where pointclouds are located')
-#     parser.set_defaults(msg_only=False)
-#     parser.set_defaults(debug=False)
-#     args = parser.parse_args()
-#
-#
-#     base_dir          = args.indir
-#     lidar_dir         = base_dir + '/pointcloud'
-#     radar_dir         = base_dir + '/radar_pointcloud'
-#     gt_boxes3d_dir    = base_dir + '/processed/gt_boxes3d'
-#     lidar_top_dir     = base_dir + '/processed/lidar_top'
-#     lidar_top_img_dir = base_dir + '/processed/lidar_top_img'
-#     mark_dir          = base_dir + '/processed/mark-top-box'
-#     avi_file          = base_dir + '/processed/mark-top-box.avi'
-#     os.makedirs(mark_dir) #, exist_ok=True)
-#     os.makedirs(lidar_top_dir) #, exist_ok=True)
-#     os.makedirs(lidar_top_img_dir) #, exist_ok=True)
-#
-#     fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
-#     for file in sorted(glob.glob(lidar_dir + '/*.npy')):
-#         name = os.path.basename(file).replace('.npy','')
-#
-#         lidar_file    = lidar_dir +'/'+name+'.npy'
-#         top_file      = lidar_top_dir +'/'+name+'.npy'
-#         top_img_file  = lidar_top_img_dir +'/'+name+'.png'
-#         mark_file     = mark_dir +'/'+name+'.png'
-#         boxes3d_file  = gt_boxes3d_dir+'/'+name+'.npy'
-#
-#         lidar = np.load(lidar_file)
-#         top, top_img = lidar_to_top(lidar)
-#         boxes3d = np.load(boxes3d_file)
-#
-#         #save
-#         cv2.imwrite(top_img_file,top_img)
-#         np.save(top_file,top)
-#
-#         #show
-#         mlab.clf(fig)
-#         draw_didi_lidar(fig, lidar, is_grid=1, is_axis=1)
-#
-#         if len(boxes3d)!=0:
-#             draw_didi_boxes3d(fig, boxes3d)
-#             draw_box3d_on_top(top_img, boxes3d, color=(255,255,255))
-#
-#
-#         azimuth,elevation,distance,focalpoint = MM_PER_VIEW1
-#         mlab.view(azimuth,elevation,distance,focalpoint)
-#         #
-#         mlab.show(1)
-#         imshow('top_img',top_img,1)
-#         cv2.waitKey(1)
-#
-#         #save
-#         cv2.imwrite(mark_file,top_img)
-#
-#     dir_to_avi(avi_file, mark_dir)
