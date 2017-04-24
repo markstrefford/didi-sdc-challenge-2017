@@ -84,7 +84,7 @@ if __name__ == '__main__':
         mark_file_top = mark_dir_top +'/'+name+'.png'
         surround_file = lidar_surround_dir + '/' + name + '.npy'
         surround_img_file  = lidar_surround_img_dir + '/' + name + '.png'
-        mark_file_surround = mark_dir_top +'/'+name+'.png'
+        mark_file_surround = mark_dir_surround +'/'+name+'.png'
         boxes3d_file  = gt_boxes3d_dir+'/'+name+'.npy'
 
         # TODO - lidar_to_surround()
