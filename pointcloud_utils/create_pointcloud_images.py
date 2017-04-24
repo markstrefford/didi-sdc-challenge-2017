@@ -73,6 +73,8 @@ if __name__ == '__main__':
         mark_file     = mark_dir +'/'+name+'.png'
         boxes3d_file  = gt_boxes3d_dir+'/'+name+'.npy'
 
+        # TODO - lidar_to_surround()
+
         lidar = np.load(lidar_file)
         top, top_img = lidar_to_top(lidar)
         boxes3d = np.load(boxes3d_file)

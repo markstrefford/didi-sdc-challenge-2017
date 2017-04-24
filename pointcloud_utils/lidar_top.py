@@ -71,20 +71,20 @@ def top_to_lidar_coords(xx,yy):
 ## lidar to top ##
 def lidar_to_top(lidar):
 
-    idx = np.where (lidar['x']>TOP_X_MIN)
-    lidar = lidar[idx]
-    idx = np.where (lidar['x']<TOP_X_MAX)
-    lidar = lidar[idx]
-
-    idx = np.where (lidar['y']>TOP_Y_MIN)
-    lidar = lidar[idx]
-    idx = np.where (lidar['y']<TOP_Y_MAX)
-    lidar = lidar[idx]
-
-    idx = np.where (lidar['z']>TOP_Z_MIN)
-    lidar = lidar[idx]
-    idx = np.where (lidar['z']<TOP_Z_MAX)
-    lidar = lidar[idx]
+    # idx = np.where (lidar['x']>TOP_X_MIN)
+    # lidar = lidar[idx]
+    # idx = np.where (lidar['x']<TOP_X_MAX)
+    # lidar = lidar[idx]
+    #
+    # idx = np.where (lidar['y']>TOP_Y_MIN)
+    # lidar = lidar[idx]
+    # idx = np.where (lidar['y']<TOP_Y_MAX)
+    # lidar = lidar[idx]
+    #
+    # idx = np.where (lidar['z']>TOP_Z_MIN)
+    # lidar = lidar[idx]
+    # idx = np.where (lidar['z']<TOP_Z_MAX)
+    # lidar = lidar[idx]
 
     x = lidar['x']
     y = lidar['y']

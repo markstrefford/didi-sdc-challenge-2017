@@ -26,6 +26,7 @@ import numpy as np
 import pandas as pd
 import PyKDL as kd
 import sensor_msgs.point_cloud2 as pc2
+from pointcloud_utils import msg_to_arr
 
 from bag_topic_def import *
 from bag_utils import *
@@ -83,8 +84,9 @@ def write_pointcloud(outdir, msg):
     results = {}
     pointcloud_filename = os.path.join(outdir, str(msg.header.stamp.to_nsec()) + '.npy')
     try:
-        lidar = pc2.read_points(msg)
-        lidar = np.array(list(lidar))
+        #lidar = pc2.read_points(msg)
+        lidar = msg_to_arr(msg)
+        #lidar = np.array(list(lidar))
         np.save(pointcloud_filename, lidar)
     except:
         print(sys.exc_info()[0])
