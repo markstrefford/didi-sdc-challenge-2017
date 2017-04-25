@@ -188,6 +188,7 @@ def create_box3d_from_tracklet(obj_size, tracklet):  # TODO - Move to a utility 
 
 def track_to_top_box(obj_size, track):
 
+    #FIXME: Add back in support for multiple objects!!
     boxes3d = create_box3d_from_tracklet(obj_size, track)
 
     is_reshape = boxes3d.shape==(8,3) #support for single box3d
@@ -259,14 +260,15 @@ def draw_track_on_top(image, obj_size, track, color=(255,255,255)):
     if is_reshape:
         top_boxes = top_boxes.reshape(1,4)
 
-    num = len(top_boxes)
-    for n in range(num):
-        b = top_boxes[n]
-        #x1,y1,x2,y2  = b
-        x1 = b[0]
-        y1 = b[1]
-        x2 = b[2]
-        y2 = b[3]
-        cv2.rectangle(image,(x1,y1),(x2,y2),color,1,cv2.LINE_AA)
+    #FIXME: Add back in support for multiple objects!!
+    #num = len(top_boxes)
+    #for n in range(num):
+    b = top_boxes[n]
+    #x1,y1,x2,y2  = b
+    x1 = b[0]
+    y1 = b[1]
+    x2 = b[2]
+    y2 = b[3]
+    cv2.rectangle(image,(x1,y1),(x2,y2),color,1,cv2.LINE_AA)
 
 
