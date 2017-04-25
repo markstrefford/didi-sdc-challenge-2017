@@ -30,7 +30,7 @@ random.seed(SEED)
 np.random.seed(SEED)
 
 import cv2
-import mayavi.mlab as mlab
+#import mayavi.mlab as mlab
 
 #from pointcloud_utils.lidar import *
 from lidar import *
@@ -234,7 +234,11 @@ def top_box_to_box3d(boxes):
     num = len(boxes)
     boxes3d = np.zeros((num,8,3),dtype=np.float32)
     for n in range(num):
-        x1,y1,x2,y2 = boxes[n]
+        b = boxes[n]
+        x1=b[0]
+        y1=b[1]
+        x2=b[2]
+        y2=b[3]
         points = [ (x1,y1), (x1,y2), (x2,y2), (x2,y1) ]
         for k in range(4):
             xx,yy = points[k]
