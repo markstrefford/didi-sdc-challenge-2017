@@ -188,7 +188,7 @@ def create_box3d_from_tracklet(obj_size, tracklet):  # TODO - Move to a utility 
 
 def track_to_top_box(obj_size, track):
 
-    box3d = create_box3d_from_tracklet(obj_size, track)
+    boxes3d = create_box3d_from_tracklet(obj_size, track)
 
     is_reshape = boxes3d.shape==(8,3) #support for single box3d
     if is_reshape:
