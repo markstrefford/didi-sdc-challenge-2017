@@ -5,3 +5,4 @@ data/
 .ipynb_checkpoints/
 *.pyc
 build/
+sample_data/

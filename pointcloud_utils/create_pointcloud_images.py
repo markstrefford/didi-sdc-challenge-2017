@@ -20,6 +20,7 @@ import sys; sys.path = [''] + sys.path  # Consistency for imports between module
 import math
 import random
 import numpy as np
+import pandas as pd
 
 SEED = 202
 
@@ -35,6 +36,31 @@ import argparse
 #from pointcloud_utils.lidar_surround import *
 from pointcloud_utils.lidar_top import *
 from pointcloud_utils.lidar_surround import *
+from tracklets.parse_tracklet import Tracklet, parse_xml
+
+
+# TODO - Move these to a utils function later?
+# TODO - Make this into a better coded function??? Perhaps a class?  timestamp.get_nearest() perhaps??
+
+# Get camera timestamp and index closest to the pointcloud timestamp
+def get_camera_timestamp_and_index(camera_timestamps, pointcloud_timestamp):
+    camera_index = camera_timestamps.ix[(camera_timestamps.timestamp - pointcloud_timestamp).abs().argsort()[:1]]
+    camera_timestamp = camera_timestamps.ix[camera_index]
+    return camera_timestamp, camera_index
+
+# Get info from tracklets
+def get_obstacle_from_tracklet(tracklet_file):
+    tracks = []
+    tracklets = parse_xml(tracklet_file)
+    for track in tracklets:
+        obj_size = track.size    #FIXME: Single obstacle per tracklet file
+        for translation, rotation, state, occlusion, truncation, amtOcclusion, amtBorders, absoluteFrameNumber in track:
+            tracks.append({
+                'frame': absoluteFrameNumber,
+                'translation': translation,
+                'rotation': rotation
+            })          # TODO: Add in other tracklets info as required
+    return obj_size, tracks
 
 # main #################################################################
 # for demo data:  /root/share/project/didi/data/didi/didi-2/Out/1/15
@@ -56,6 +82,7 @@ if __name__ == '__main__':
     base_dir          = args.indir
     lidar_dir         = base_dir + '/pointcloud'
     radar_dir         = base_dir + '/radar_pointcloud'
+
     gt_boxes3d_dir    = base_dir + '/processed/gt_boxes3d'
     lidar_top_dir     = base_dir + '/processed/lidar_top'
     lidar_top_img_dir = base_dir + '/processed/lidar_top_img'
@@ -66,13 +93,21 @@ if __name__ == '__main__':
     mark_dir_surround = base_dir + '/processed/mark-surround-box'
     avi_file_surround = base_dir + '/processed/mark-surround-box.avi'
 
-    # TODO - Sort out error if directory exists!!
-    os.makedirs(mark_dir_top) #, exist_ok=True)
-    os.makedirs(mark_dir_surround) #, exist_ok=True)
-    os.makedirs(lidar_top_dir) #, exist_ok=True)
-    os.makedirs(lidar_top_img_dir) #, exist_ok=True)
-    os.makedirs(lidar_surround_dir) #, exist_ok=True)
-    os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
+    tracklet_file      = base_dir + 'tracklet_labels.xml'
+    camera_csv        = base_dir + 'capture_vehicle_camera.csv'
+
+    # TODO - Radar
+
+    # TODO - Sort out error if directory exists!! As I'm testing these already exist!!
+    # os.makedirs(mark_dir_top) #, exist_ok=True)
+    # os.makedirs(mark_dir_surround) #, exist_ok=True)
+    # os.makedirs(lidar_top_dir) #, exist_ok=True)
+    # os.makedirs(lidar_top_img_dir) #, exist_ok=True)
+    # os.makedirs(lidar_surround_dir) #, exist_ok=True)
+    # os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
+
+    camera_timestamps = pd.read_csv(camera_csv)['timestamps']
+    obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)    # FIXME Single obstacle per tracklet file
 
     #fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
     for file in sorted(glob.glob(lidar_dir + '/*.npy')):
@@ -85,23 +120,29 @@ if __name__ == '__main__':
         surround_file = lidar_surround_dir + '/' + name + '.npy'
         surround_img_file  = lidar_surround_img_dir + '/' + name + '.png'
         mark_file_surround = mark_dir_surround +'/'+name+'.png'
-        boxes3d_file  = gt_boxes3d_dir+'/'+name+'.npy'
+        # boxes3d_file  = gt_boxes3d_dir+'/'+name+'.npy'
 
-        # TODO - lidar_to_surround()
+        # TODO - radar
 
         lidar = np.load(lidar_file)
         top, top_img = lidar_to_top(lidar)
         surround, surround_img = lidar_to_surround(lidar)
 
+        # Draw box from tracklet file on the images
+        pointcloud_timestamp = name         # Assuming that the name is the timestamp!!
+        camera_timestamp, index = get_camera_timestamp_and_index(camera_timestamps, pointcloud_timestamp)
         #boxes3d = np.load(boxes3d_file)
 
-        #save
+        #save pointcloud as image
         cv2.imwrite(top_img_file,top_img)
         np.save(top_file,top)
         cv2.imwrite(surround_img_file, surround_img)
         np.save(surround_file,surround)
 
-        #show
+        #now add in object bounding box for display purposes
+        top_img = draw_box3d_on_top(top_img, obj_size, tracks[index], color=(255,0,0))
+        surround_img = draw_box3d_on_surround(surround_img, obj_size, tracks[index], color=(255,255,255))
+
         #print ('main(): show mlab images')
         #mlab.clf(fig)
         #draw_didi_lidar(fig, lidar, is_grid=1, is_axis=1)
