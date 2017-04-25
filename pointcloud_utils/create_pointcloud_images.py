@@ -44,7 +44,7 @@ from tracklets.parse_tracklet import Tracklet, parse_xml
 
 # Get camera timestamp and index closest to the pointcloud timestamp
 def get_camera_timestamp_and_index(camera_timestamps, pointcloud_timestamp):
-    camera_index = camera_timestamps.ix[(camera_timestamps.timestamp - pointcloud_timestamp).abs().argsort()[:1]]
+    camera_index = camera_timestamps.ix[(camera_timestamps.ix['timestamp'] - pointcloud_timestamp).abs().argsort()[:1]]
     camera_timestamp = camera_timestamps.ix[camera_index]
     return camera_timestamp, camera_index
 
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     # os.makedirs(lidar_surround_dir) #, exist_ok=True)
     # os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
 
-    camera_timestamps = pd.read_csv(camera_csv)['timestamps']
+    camera_timestamps = pd.read_csv(camera_csv)['timestamp']
     obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)    # FIXME Single obstacle per tracklet file
 
     #fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
