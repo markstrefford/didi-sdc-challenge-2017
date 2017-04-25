@@ -125,7 +125,7 @@ if __name__ == '__main__':
         surround, surround_img = lidar_to_surround(lidar)
 
         # Draw box from tracklet file on the images
-        pointcloud_timestamp = name         # Assuming that the name is the timestamp!!
+        pointcloud_timestamp = int(name)         # Assuming that the name is the timestamp!!
         camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp)
         #boxes3d = np.load(boxes3d_file)
 
@@ -136,8 +136,8 @@ if __name__ == '__main__':
         np.save(surround_file,surround)
 
         #now add in object bounding box for display purposes
-        top_img = draw_box3d_on_top(top_img, obj_size, tracks[index], color=(255,0,0))
-        surround_img = draw_box3d_on_surround(surround_img, obj_size, tracks[index], color=(255,255,255))
+        top_img = track_to_top_box(top_img, obj_size, tracks[index], color=(255,0,0))
+        # surround_img = draw_box3d_on_surround(surround_img, obj_size, tracks[index], color=(255,255,255))
 
         #print ('main(): show mlab images')
         #mlab.clf(fig)
