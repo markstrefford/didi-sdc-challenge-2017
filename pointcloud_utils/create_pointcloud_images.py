@@ -31,13 +31,9 @@ import cv2
 import mayavi.mlab as mlab
 import argparse
 
-#from pointcloud_utils.lidar import *
-#from pointcloud_utils.lidar_top import *
-#from pointcloud_utils.lidar_surround import *
 from pointcloud_utils.lidar_top import *
 from pointcloud_utils.lidar_surround import *
 from tracklets.parse_tracklet import Tracklet, parse_xml
-
 
 # TODO - Move these to a utils function later?
 # TODO - Make this into a better coded function??? Perhaps a class?  timestamp.get_nearest() perhaps??
@@ -106,7 +102,7 @@ if __name__ == '__main__':
     # os.makedirs(lidar_surround_dir) #, exist_ok=True)
     # os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
 
-    camera_data = pd.read_csv(camera_csv)['timestamp']
+    camera_data = pd.read_csv(camera_csv)   #['timestamp']
     obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)    # FIXME Single obstacle per tracklet file
 
     #fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
