@@ -43,9 +43,9 @@ from tracklets.parse_tracklet import Tracklet, parse_xml
 # TODO - Make this into a better coded function??? Perhaps a class?  timestamp.get_nearest() perhaps??
 
 # Get camera timestamp and index closest to the pointcloud timestamp
-def get_camera_timestamp_and_index(camera_timestamps, pointcloud_timestamp):
-    camera_index = camera_timestamps.ix[(camera_timestamps.ix['timestamp'] - pointcloud_timestamp).abs().argsort()[:1]]
-    camera_timestamp = camera_timestamps.ix[camera_index]
+def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp):
+    camera_index = camera_data.ix[(camera_data.timestamp - pointcloud_timestamp).abs().argsort()[:1]]
+    camera_timestamp = camera_data.ix[camera_index]
     return camera_timestamp, camera_index
 
 # Get info from tracklets
@@ -106,7 +106,7 @@ if __name__ == '__main__':
     # os.makedirs(lidar_surround_dir) #, exist_ok=True)
     # os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
 
-    camera_timestamps = pd.read_csv(camera_csv)['timestamp']
+    camera_data = pd.read_csv(camera_csv)['timestamp']
     obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)    # FIXME Single obstacle per tracklet file
 
     #fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
@@ -130,7 +130,7 @@ if __name__ == '__main__':
 
         # Draw box from tracklet file on the images
         pointcloud_timestamp = name         # Assuming that the name is the timestamp!!
-        camera_timestamp, index = get_camera_timestamp_and_index(camera_timestamps, pointcloud_timestamp)
+        camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp)
         #boxes3d = np.load(boxes3d_file)
 
         #save pointcloud as image
