@@ -263,7 +263,7 @@ def draw_track_on_top(image, obj_size, track, color=(255,255,255)):
     #FIXME: Add back in support for multiple objects!!
     #num = len(top_boxes)
     #for n in range(num):
-    b = top_boxes[n]
+    b = top_boxes  #[n]
     #x1,y1,x2,y2  = b
     x1 = b[0]
     y1 = b[1]
