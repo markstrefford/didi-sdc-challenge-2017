@@ -127,6 +127,7 @@ if __name__ == '__main__':
         # Draw box from tracklet file on the images
         pointcloud_timestamp = int(name)         # Assuming that the name is the timestamp!!
         camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp)
+        print ('Timestamps: pointcloud={}, camera={}, diff='.format(pointcloud_timestamp, camera_timestamp, abs(pointcloud_timestamp-camera_timestamp)))
         #boxes3d = np.load(boxes3d_file)
 
         #save pointcloud as image

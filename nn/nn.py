@@ -47,14 +47,15 @@ def surround_nn(model, num_classes, weights_path=None, b_regularizer = None, w_r
     for layer in range(3):
         x=Convolution2D(num_filters, filter_length, filter_length, border_mode=border_mode,
                         activation=activation,
-                        W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
-        nf *= 2
+                        W_regularizer=w_regularizer, b_regularizer=b_regularizer,
+                        name='surround_layer' + str(layer))(x)
+        nf *= 2     # Increment number of filters
     predictions=x    #FIXME - What's the output of this CNN??  Candidates for objects I expect?
     model = Model(inputs=inputs, outputs=predictions)
     model.compile(optimizer='rmsprop',
                   loss='categorical_crossentropy',
                   metrics=['accuracy'])
-    return x, model   # FIXME: Return both for now...
+    return inputs, predictions, model   # FIXME: Return both for now...
 
 
 # TODO: Be DRY here... lots of code repetition... can this be a single function with different parameters calling it??
