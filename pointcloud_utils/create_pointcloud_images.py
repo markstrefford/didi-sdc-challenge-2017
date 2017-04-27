@@ -152,8 +152,8 @@ if __name__ == '__main__':
         #
         #mlab.show(1)
         if show_images:
-            imshow('top_img',top_img,1)
-            imshow('surrond_img',surround_img,3)
+            imshow('top_img',top_img,3)
+            imshow('surround_img',surround_img,3)
             cv2.waitKey(1)
 
         #save
