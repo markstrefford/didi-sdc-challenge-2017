@@ -60,7 +60,7 @@ def surround_nn(model, num_classes, weights_path=None, b_regularizer = None, w_r
 
 # TODO: Be DRY here... lots of code repetition... can this be a single function with different parameters calling it??
 def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
-    inputs = Input(shape=(top_z, top_y, top_x))
+    inputs = Input(shape=(top_x, top_y, top_z))
     x = inputs # Initial tensor
     num_conv_layers = 3  # For now...
     nf = num_filters
