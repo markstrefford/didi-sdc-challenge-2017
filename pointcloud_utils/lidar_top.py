@@ -269,7 +269,7 @@ def draw_track_on_top(image, obj_size, track, color=(255,255,255)):
     y1 = b[1]
     x2 = b[2]
     y2 = b[3]
-    cv2.rectangle(image,(x1,y1),(x2,y2),color,1,cv2.LINE_AA)
+    cv2.rectangle(image, (x1,y1), (x2,y2),color, 2, cv2.LINE_AA)
 
     return image
 

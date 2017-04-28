@@ -137,7 +137,7 @@ if __name__ == '__main__':
         np.save(surround_file,surround)
 
         #now add in object bounding box for display purposes
-        top_img = draw_track_on_top(top_img, obj_size, tracks[index], color=(255,0,0))
+        top_img = draw_track_on_top(top_img, obj_size, tracks[index], color=(0,0, 255))
         # surround_img = draw_box3d_on_surround(surround_img, obj_size, tracks[index], color=(255,255,255))
 
         #print ('main(): show mlab images')
