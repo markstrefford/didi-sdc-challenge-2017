@@ -25,9 +25,9 @@ from keras.optimizers import Adam, SGD
 from keras.callbacks import Callback
 
 #TODO - Just a starter!!!
-num_filters = 8
-num_pooling = 2
+num_filters = 32
 filter_length = 2
+num_pooling = 2
 border_mode = "valid"
 activation = "relu"
 
@@ -59,7 +59,7 @@ def surround_nn(model, num_classes, weights_path=None, b_regularizer = None, w_r
 
 
 # TODO: Be DRY here... lots of code repetition... can this be a single function with different parameters calling it??
-def top_nn(model, num_classes, weights_path=None, b_regularizer = None, w_regularizer=None):
+def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     inputs = Input(shape=(top_z, top_y, top_x))
     x = inputs # Initial tensor
     num_conv_layers = 3  # For now...
@@ -67,24 +67,27 @@ def top_nn(model, num_classes, weights_path=None, b_regularizer = None, w_regula
     # Create CNN layers, each one has 2x the features of the previous one (FIXME: Not sure if this is the best approach, let's train something for now!!)
     for layer in range(num_conv_layers):
         print ('Layer {}, num_filters {}'.format(layer, nf))
-        x=Convolution2D(num_filters, filter_length, filter_length, border_mode=border_mode,
-                        activation=activation,
-                        W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
+        x=Convolution2D(nf, (filter_length, filter_length),
+                        border_mode=border_mode,
+                        W_regularizer = w_regularizer,
+                        b_regularizer = b_regularizer,
+                        name = 'cnn_layer_' + str(layer))(x)
         x=Activation(activation)(x)
         x=MaxPooling2D(pool_size=(num_pooling, num_pooling))(x)
         x=Dropout(0.25)(x)
+        print ('Layer: {}, tensor: {}'.format(layer, x))
         nf *= 2
     x=Flatten()(x)
-    x=Dense(128, W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
+    x=Dense(1024, W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
     x=Activation(activation)(x)
     x=Dropout(0.5)(x)
     x=Dense(6,W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
     x=Activation(activation)(x)
     predictions=x   # tx, ty, tz, rx, ry, rz
                     # FIXME - What's the output of this CNN??  Candidates for objects I expect?
-    model = Model(inputs=inputs, outputs=predictions)
+    model = Model(input=inputs, output=predictions)
     model.compile(optimizer='rmsprop',
-                  loss='crossentropy',
+                  loss='mean_squared_error',    #FIXME: Just for now...
                   metrics=['accuracy'])
     return x, model   # FIXME: Return both for now...
 
