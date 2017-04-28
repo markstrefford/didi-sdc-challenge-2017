@@ -60,18 +60,31 @@ def surround_nn(model, num_classes, weights_path=None, b_regularizer = None, w_r
 
 # TODO: Be DRY here... lots of code repetition... can this be a single function with different parameters calling it??
 def top_nn(model, num_classes, weights_path=None, b_regularizer = None, w_regularizer=None):
-    inputs = Input(shape=(top_x, top_y, top_z))
+    inputs = Input(shape=(top_z, top_y, top_x))
     x = inputs # Initial tensor
+    num_conv_layers = 3  # For now...
     nf = num_filters
-    for layer in range(3):
+    # Create CNN layers, each one has 2x the features of the previous one (FIXME: Not sure if this is the best approach, let's train something for now!!)
+    for layer in range(num_conv_layers):
+        print ('Layer {}, num_filters {}'.format(layer, nf))
         x=Convolution2D(num_filters, filter_length, filter_length, border_mode=border_mode,
                         activation=activation,
                         W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
+        x=Activation(activation)(x)
+        x=MaxPooling2D(pool_size=(num_pooling, num_pooling))(x)
+        x=Dropout(0.25)(x)
         nf *= 2
-    predictions=x    #FIXME - What's the output of this CNN??  Candidates for objects I expect?
+    x=Flatten()(x)
+    x=Dense(128, W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
+    x=Activation(activation)(x)
+    x=Dropout(0.5)(x)
+    x=Dense(6,W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
+    x=Activation(activation)(x)
+    predictions=x   # tx, ty, tz, rx, ry, rz
+                    # FIXME - What's the output of this CNN??  Candidates for objects I expect?
     model = Model(inputs=inputs, outputs=predictions)
     model.compile(optimizer='rmsprop',
-                  loss='categorical_crossentropy',
+                  loss='crossentropy',
                   metrics=['accuracy'])
     return x, model   # FIXME: Return both for now...
 
@@ -92,13 +105,7 @@ def nn(num_classes, weights_path=None, w_regularizer = None, b_regularizer = Non
 
     model = Sequential()
 
-
-
-
-
-    model.compile(loss='categorical_crossentropy',
-                  optimizer='sgd',
-                  metrics=['accuracy'])
+    x, model = top_nn(model, 6)
 
 
     if weights_path:
