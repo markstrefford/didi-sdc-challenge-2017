@@ -95,12 +95,12 @@ if __name__ == '__main__':
     # TODO - Radar
 
     # TODO - Sort out error if directory exists!! As I'm testing these already exist!!
-    # os.makedirs(mark_dir_top) #, exist_ok=True)
-    # os.makedirs(mark_dir_surround) #, exist_ok=True)
-    # os.makedirs(lidar_top_dir) #, exist_ok=True)
-    # os.makedirs(lidar_top_img_dir) #, exist_ok=True)
-    # os.makedirs(lidar_surround_dir) #, exist_ok=True)
-    # os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
+    os.makedirs(mark_dir_top) #, exist_ok=True)
+    os.makedirs(mark_dir_surround) #, exist_ok=True)
+    os.makedirs(lidar_top_dir) #, exist_ok=True)
+    os.makedirs(lidar_top_img_dir) #, exist_ok=True)
+    os.makedirs(lidar_surround_dir) #, exist_ok=True)
+    os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
 
     camera_data = pd.read_csv(camera_csv)   #['timestamp']
     obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)    # FIXME Single obstacle per tracklet file
@@ -127,7 +127,7 @@ if __name__ == '__main__':
         # Draw box from tracklet file on the images
         pointcloud_timestamp = int(name)         # Assuming that the name is the timestamp!!
         camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp)
-        print ('Timestamps: pointcloud={}, camera={}, diff='.format(pointcloud_timestamp, camera_timestamp, abs(int(pointcloud_timestamp)-int(camera_timestamp))))
+        print ('Timestamps: pointcloud={}, camera={}, diff={}'.format(pointcloud_timestamp, camera_timestamp, abs(int(pointcloud_timestamp)-int(camera_timestamp))))
         #boxes3d = np.load(boxes3d_file)
 
         #save pointcloud as image
