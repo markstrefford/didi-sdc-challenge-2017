@@ -39,6 +39,7 @@ from tracklets.parse_tracklet import Tracklet, parse_xml
 # TODO - Make this into a better coded function??? Perhaps a class?  timestamp.get_nearest() perhaps??
 
 # Get camera timestamp and index closest to the pointcloud timestamp
+#TODO Create a utility function
 def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp):
     camera_index = camera_data.ix[(camera_data.timestamp - pointcloud_timestamp).abs().argsort()[:1]].index[0]
     camera_timestamp = camera_data.ix[camera_index].timestamp

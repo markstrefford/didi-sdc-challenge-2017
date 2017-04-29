@@ -40,26 +40,33 @@ camera_x, camera_y, camera_z = 1400, 800, 3    #TODO - Get correct values here!!
 # Create the seperate parts of the CNN
 # Note that in all of this, x is a tensor (see https://keras.io/getting-started/functional-api-guide/)
 # Create the surround CNN
-def surround_nn(model, num_classes, weights_path=None, b_regularizer = None, w_regularizer=None):
-    inputs = Input(shape=(surround_x, surround_y, surround_z))
-    x = inputs # Initial tensor
-    nf = num_filters
-    for layer in range(3):
-        x=Convolution2D(num_filters, filter_length, filter_length, border_mode=border_mode,
-                        activation=activation,
-                        W_regularizer=w_regularizer, b_regularizer=b_regularizer,
-                        name='surround_layer' + str(layer))(x)
-        nf *= 2     # Increment number of filters
-    predictions=x    #FIXME - What's the output of this CNN??  Candidates for objects I expect?
-    model = Model(inputs=inputs, outputs=predictions)
-    model.compile(optimizer='rmsprop',
-                  loss='categorical_crossentropy',
-                  metrics=['accuracy'])
-    return inputs, predictions, model   # FIXME: Return both for now...
+# def surround_nn(model, num_classes, weights_path=None, b_regularizer = None, w_regularizer=None):
+#     inputs = Input(shape=(surround_x, surround_y, surround_z))
+#     x = inputs # Initial tensor
+#     nf = num_filters
+#     for layer in range(3):
+#         x=Convolution2D(num_filters, filter_length, filter_length, border_mode=border_mode,
+#                         activation=activation,
+#                         W_regularizer=w_regularizer, b_regularizer=b_regularizer,
+#                         name='surround_layer' + str(layer))(x)
+#         nf *= 2     # Increment number of filters
+#     predictions=x    #FIXME - What's the output of this CNN??  Candidates for objects I expect?
+#     model = Model(inputs=inputs, outputs=predictions)
+#     model.compile(optimizer='rmsprop',
+#                   loss='categorical_crossentropy',
+#                   metrics=['accuracy'])
+#     return inputs, predictions, model   # FIXME: Return both for now...
 
 
 # TODO: Be DRY here... lots of code repetition... can this be a single function with different parameters calling it??
 def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
+    class LossHistory(Callback):
+        def on_train_begin(self, logs={}):
+            self.losses = []
+
+        def on_batch_end(self, batch, logs={}):
+            self.losses.append(logs.get('loss'))
+
     inputs = Input(shape=(top_x, top_y, top_z))
     x = inputs # Initial tensor
     num_conv_layers = 3  # For now...
@@ -89,7 +96,7 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     model.compile(optimizer='rmsprop',
                   loss='mean_squared_error',    #FIXME: Just for now...
                   metrics=['accuracy'])
-    return x, model   # FIXME: Return both for now...
+    return LossHistory, model   # FIXME: Return both for now, handle LossHistory for merged NN later
 
 
 def camera_nn(model, num_classes, weights_path=None, w_regularizer = None, b_regularizer = None):
@@ -97,25 +104,16 @@ def camera_nn(model, num_classes, weights_path=None, w_regularizer = None, b_reg
 
 
 
-def nn(num_classes, weights_path=None, w_regularizer = None, b_regularizer = None):
-    class LossHistory(Callback):
-        def on_train_begin(self, logs={}):
-            self.losses = []
-
-        def on_batch_end(self, batch, logs={}):
-            self.losses.append(logs.get('loss'))
-
-
-    model = Sequential()
-
-    x, model = top_nn(model, 6)
-
-
-    if weights_path:
-        print "Loading weights from {}".format(weights_path)
-        model.load_weights(weights_path)
-
-    return model, LossHistory
-
+# def nn(weights_path=None, w_regularizer = None, b_regularizer = None):
+#
+#
+#
+#     model = Sequential()
+#
+#     xmodel = top_nn(model, 6)
+#     if weights_path:
+#         print "Loading weights from {}".format(weights_path)
+#         model.load_weights(weights_path)
+#     return model, LossHistory
 
 
