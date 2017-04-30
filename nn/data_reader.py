@@ -72,13 +72,16 @@ class DataReader(object):
 
         camera_data = pd.read_csv(camera_csv)  # ['timestamp']
         obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
+        print ('Loaded tracklets {}'.format(tracks))
 
         for file in sorted(glob.glob(self.lidar_top_dir + '/*.npy')):
             lidar_file = os.path.join(self.lidar_top_dir, file)
+            print('Adding {} to training data'.format(lidar_file))
 
             #lidar = np.load(lidar_file)
             xs.append(lidar_file)
             timestamp = int(os.path.basename(file).replace('.npy', ''))
+            print('Getting tx, ty, tz for timestamp {}'.format(timestamp))
             camera_timestamp, index = get_nearest_timestamp_and_index(camera_data, timestamp)
             t = tracks[index].translation
             r = tracks[index].rotation
@@ -89,7 +92,7 @@ class DataReader(object):
 
         self.num_samples = len(xs)
 
-        print ("number of training samples={}, number of training values={}".format(self.num_samples, len(ys)))
+        print ("total={}, number of training samples={}, number of training values={}".format(total, self.num_samples, len(ys)))
 
         self.train_xs = xs[:int(len(xs) * 0.8)]
         self.train_ys = ys[:int(len(xs) * 0.8)]
