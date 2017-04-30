@@ -10,19 +10,18 @@ TODO: This will evolve over time to:
 
 """
 
+# Fix imports so we can load tracklets module! (FIXME: What's a better way?)
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
-print sys.path
+from tracklets.parse_tracklet import Tracklet, parse_xml
 
 import nn
-import os
 import tensorflow as tf
 import numpy as np
 import pandas as pd
 from keras.models import Model, Sequential
 import glob
-from tracklets.parse_tracklet import Tracklet, parse_xml
 
 
 # Get camera timestamp and index closest to the pointcloud timestamp
@@ -89,6 +88,8 @@ class DataReader(object):
             total +=1
 
         self.num_samples = len(xs)
+
+        print ("number of training samples={}, number of training values={}".format(self.num_samples, len(ys)))
 
         self.train_xs = xs[:int(len(xs) * 0.8)]
         self.train_ys = ys[:int(len(xs) * 0.8)]
