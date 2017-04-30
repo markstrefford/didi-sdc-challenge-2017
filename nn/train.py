@@ -91,7 +91,7 @@ def main():
     model.save_weights(checkpoint_path)
     print ('Final model saved as {}', filename)
 
-if __name__ = '__main__':
+if __name__ == '__main__':
     main()
 
 
