@@ -49,6 +49,8 @@ def get_obstacle_from_tracklet(tracklet_file):
 
 
 # Use file-based training for now, single bag file
+# TODO: Make this work with multiple bags
+# TODO: Make this work with multiple trackable objects
 class DataReader(object):
     def __init__(self, base_dir):
 
@@ -74,7 +76,9 @@ class DataReader(object):
         obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
         print ('Loaded tracklets {}'.format(tracks))
 
-        for file in sorted(glob.glob(self.lidar_top_dir + '/*.npy')):
+        lidar_files = sorted(glob.glob(os.path.join(self.lidar_top_dir, '/*.npy')))
+        print ('Found LIDAR files: {}'.format(lidar_files))
+        for file in lidar_files:
             lidar_file = os.path.join(self.lidar_top_dir, file)
             print('Adding {} to training data'.format(lidar_file))
 
