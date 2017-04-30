@@ -10,6 +10,8 @@ TODO: This will evolve over time to:
 
 """
 
+import sys
+sys.path.insert(1, '..')
 
 import nn
 import os
