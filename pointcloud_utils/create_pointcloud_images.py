@@ -132,18 +132,10 @@ if __name__ == '__main__':
         #boxes3d = np.load(boxes3d_file)
 
         #save pointcloud as image
-        print ('About to write {}'.format(top_img_file))
         cv2.imwrite(top_img_file,top_img)
-        print ('Done!')
-        print ('About to write {}'.format(top_file))
         np.save(top_file,top)
-        print ('Done!')
-        print ('About to write {}'.format(surround_img_file))
         cv2.imwrite(surround_img_file, surround_img)
-        print ('Done!')
-        print ('About to write {}'.format(surround_file))
         np.save(surround_file,surround)
-        print ('Done!')
 
         #now add in object bounding box for display purposes
         top_img = draw_track_on_top(top_img, obj_size, tracks[index], color=(0,0, 255))
