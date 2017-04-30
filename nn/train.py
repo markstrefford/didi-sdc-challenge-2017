@@ -68,6 +68,7 @@ def main():
     #FIXME: Based on number of steps, convert to number of epochs
     for i in range(start_step, start_step + args.num_steps):
         xs, ys = data_reader.load_train_batch(batch_size=args.batch_size)
+	print ("About to train on xs[{}], ys[{}]".format(xs.shape, ys.shape))
         train_error = model.train_on_batch(xs, ys)
         print ('{}/{}: Training loss: {}'.format(i, start_step + args.num_steps, train_error))
 

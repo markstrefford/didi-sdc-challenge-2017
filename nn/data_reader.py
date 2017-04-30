@@ -112,7 +112,7 @@ class DataReader(object):
             x_out.append(pointcloud)
             y_out.append(self.train_ys[index])
         self.train_batch_pointer += batch_size
-        return x_out, y_out
+        return np.array(x_out), np.array(y_out)
 
 
     def load_val_batch(self, batch_size):
@@ -125,4 +125,5 @@ class DataReader(object):
             x_out.append(pointcloud)
             y_out.append(self.val_ys[index])
         self.val_batch_pointer += batch_size
-        return x_out, y_out
+        return np.array(x_out), np.array(y_out)
+
