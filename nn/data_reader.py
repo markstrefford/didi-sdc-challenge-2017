@@ -82,9 +82,7 @@ class DataReader(object):
             #lidar = np.load(lidar_file)
             xs.append(lidar_file)
             timestamp = int(os.path.basename(file).replace('.npy', ''))
-            print('Getting tx, ty, tz for timestamp {}'.format(timestamp))
             camera_timestamp, index = get_nearest_timestamp_and_index(camera_data, timestamp)
-	    print ('tracks[{}]={}'.format(index, tracks[index]))
             t = tracks[index]['translation']
             r = tracks[index]['rotation']
             y = np.array([t[0], t[1], t[2], r[0], r[1], r[2]])
@@ -93,8 +91,6 @@ class DataReader(object):
             total +=1
 
         self.num_samples = len(xs)
-
-        print ("total={}, number of training samples={}, number of training values={}".format(total, self.num_samples, len(ys)))
 
         self.train_xs = xs[:int(len(xs) * 0.8)]
         self.train_ys = ys[:int(len(xs) * 0.8)]
