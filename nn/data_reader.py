@@ -10,8 +10,10 @@ TODO: This will evolve over time to:
 
 """
 
+import os
 import sys
-sys.path.insert(1, '..')
+sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
+print sys.path
 
 import nn
 import os
