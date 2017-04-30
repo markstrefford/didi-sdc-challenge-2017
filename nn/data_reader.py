@@ -53,8 +53,6 @@ def get_obstacle_from_tracklet(tracklet_file):
 # TODO: Make this work with multiple trackable objects
 class DataReader(object):
     def __init__(self, base_dir):
-
-        print ('__init__: base_dir={}'.format(base_dir))
         self.training_dir = base_dir
         self.lidar_top_dir = os.path.join(self.training_dir, 'processed/lidar_top')
         self.load()
@@ -77,20 +75,18 @@ class DataReader(object):
         obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
         #print ('Loaded tracklets {}'.format(tracks))
 
-        lidar_files = sorted(glob.glob(os.path.join(self.lidar_top_dir, '/*.npy')))
-        print ('LIDAR directory: {}'.format(self.lidar_top_dir))
-        print ('Found LIDAR files: {}'.format(lidar_files))
+        lidar_files = sorted(glob.glob(os.path.join(self.lidar_top_dir, '*.npy')))
         for file in lidar_files:
             lidar_file = os.path.join(self.lidar_top_dir, file)
-            print('Adding {} to training data'.format(lidar_file))
 
             #lidar = np.load(lidar_file)
             xs.append(lidar_file)
             timestamp = int(os.path.basename(file).replace('.npy', ''))
             print('Getting tx, ty, tz for timestamp {}'.format(timestamp))
             camera_timestamp, index = get_nearest_timestamp_and_index(camera_data, timestamp)
-            t = tracks[index].translation
-            r = tracks[index].rotation
+	    print ('tracks[{}]={}'.format(index, tracks[index]))
+            t = tracks[index]['translation']
+            r = tracks[index]['rotation']
             y = np.array([t[0], t[1], t[2], r[0], r[1], r[2]])
             ys.append(y)
 
