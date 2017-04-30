@@ -3,12 +3,16 @@ train.py
 
 Train the neural network to predict location and orientation of obstacles
 
+Example:
+    python train.py --data_dir=/vol/dataset2/Didi-Release-2/Tracklets/1pc/15pc/
+
 TODO: This will evolve over time to handle more than 1 bag, to become a ROS subscriber, etc.
 
 """
 
 import os
 import nn
+import argparse
 from data_reader import DataReader
 
 # TODO: Remove what's not needed here
@@ -58,7 +62,7 @@ def main():
     summary = model.summary()
     print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 
-    data_reader = DataReader(args.data_dir, args.csv)
+    data_reader = DataReader(args.data_dir)
 
     #FIXME: Based on number of steps, convert to number of epochs
     for i in range(start_step, start_step + args.num_steps):
