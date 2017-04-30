@@ -54,8 +54,9 @@ def get_obstacle_from_tracklet(tracklet_file):
 class DataReader(object):
     def __init__(self, base_dir):
 
+        print ('__init__: base_dir={}'.format(base_dir))
         self.training_dir = base_dir
-        self.lidar_top_dir = os.path.join(self.training_dir, '/processed/lidar_top')
+        self.lidar_top_dir = os.path.join(self.training_dir, 'processed/lidar_top')
         self.load()
 
     def load(self):
@@ -74,7 +75,7 @@ class DataReader(object):
 
         camera_data = pd.read_csv(camera_csv)  # ['timestamp']
         obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
-        print ('Loaded tracklets {}'.format(tracks))
+        #print ('Loaded tracklets {}'.format(tracks))
 
         lidar_files = sorted(glob.glob(os.path.join(self.lidar_top_dir, '/*.npy')))
         print ('LIDAR directory: {}'.format(self.lidar_top_dir))
