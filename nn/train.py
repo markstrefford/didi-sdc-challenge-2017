@@ -62,6 +62,7 @@ def main():
     summary = model.summary()
     print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 
+    print('train.py: args.data_dir={}'.format(args.data_dir))
     data_reader = DataReader(args.data_dir)
 
     #FIXME: Based on number of steps, convert to number of epochs

@@ -28,7 +28,7 @@ random.seed(SEED)
 np.random.seed(SEED)
 
 import cv2
-import mayavi.mlab as mlab
+#import mayavi.mlab as mlab
 import argparse
 
 from pointcloud_utils.lidar_top import *

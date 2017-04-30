@@ -77,6 +77,7 @@ class DataReader(object):
         print ('Loaded tracklets {}'.format(tracks))
 
         lidar_files = sorted(glob.glob(os.path.join(self.lidar_top_dir, '/*.npy')))
+        print ('LIDAR directory: {}'.format(self.lidar_top_dir))
         print ('Found LIDAR files: {}'.format(lidar_files))
         for file in lidar_files:
             lidar_file = os.path.join(self.lidar_top_dir, file)
