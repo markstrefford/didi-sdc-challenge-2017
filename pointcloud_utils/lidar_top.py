@@ -226,33 +226,6 @@ def track_to_top_box(obj_size, track):
     return top_boxes
 
 
-# def top_box_to_box3d(boxes):
-#
-#     is_reshape = boxes.shape==(4) #support for single box
-#     if is_reshape:
-#         boxes = boxes.reshape(1,4)
-#
-#     num = len(boxes)
-#     boxes3d = np.zeros((num,8,3),dtype=np.float32)
-#     for n in range(num):
-#         b = boxes[n]
-#         x1=b[0]
-#         y1=b[1]
-#         x2=b[2]
-#         y2=b[3]
-#         points = [ (x1,y1), (x1,y2), (x2,y2), (x2,y1) ]
-#         for k in range(4):
-#             xx,yy = points[k]
-#             x,y  = top_to_lidar_coords(xx,yy)
-#             boxes3d[n,k,  :] = x,y, -2  ## <todo>
-#             boxes3d[n,4+k,:] = x,y,0.4
-#
-#     if is_reshape:
-#         boxes3d = boxes3d.squeeze()
-#
-#     return boxes3d
-
-
 def draw_track_on_top(image, obj_size, track, color=(255,255,255)):
 
     top_boxes = track_to_top_box(obj_size, track)
