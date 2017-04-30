@@ -18,6 +18,8 @@ import numpy as np
 import pandas as pd
 from keras.models import Model, Sequential
 import glob
+from tracklets.parse_tracklet import Tracklet, parse_xml
+
 
 # Get camera timestamp and index closest to the pointcloud timestamp
 #TODO Create a utility function
