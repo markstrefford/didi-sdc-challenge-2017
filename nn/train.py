@@ -18,10 +18,10 @@ from data_reader import DataReader
 # TODO: Remove what's not needed here
 BATCH_SIZE = 32
 DATA_DIR = '/vol/didi/dataset2/tracklets/1pc/10pc'
-LOGDIR = './logs'
+LOGDIR = '/vol/training/logs'
 CSV='data.csv'
 CHECKPOINT_EVERY = 100
-NUM_STEPS = int(1e4)
+NUM_STEPS = int(1e3)
 CKPT_FILE = 'model.ckpt'
 LEARNING_RATE = 1e-3
 KEEP_PROB = 0.8
@@ -38,8 +38,8 @@ def get_arguments():
                         action='store', dest='data_dir', help='The directory containing the training data.')
     # parser.add_argument('--data_csv', '--csv', type=str, default=CSV,
     #                     action='store', dest='csv', help='The csv containing the training data.')
-    # parser.add_argument('--logdir', type=str, default=LOGDIR,
-    #                     help='Directory for log files.')
+    parser.add_argument('--logdir', type=str, default=LOGDIR,
+                        help='Directory for log files.')
     parser.add_argument('--restore_from', type=str, default=None,
                         help='Checkpoint file to restore model weights from.')
     parser.add_argument('--checkpoint_every', type=int, default=CHECKPOINT_EVERY,
@@ -79,7 +79,7 @@ def main():
             if i > 0 and i % args.checkpoint_every == 0:
                 if not os.path.exists(args.logdir):
                     os.makedirs(args.logdir)
-                filename = 'model-step-%d-val-%g.ckpt' % (i, val_error)
+                filename = 'model-step-%d-val-%g.ckpt' % (i, val_error[1])
                 checkpoint_path = os.path.join(args.logdir, filename)
                 model.save(checkpoint_path)
                 print('Model saved in file: {}'.format(filename))
@@ -91,7 +91,7 @@ def main():
             # TODO - Write loss history and other metrics for graphing...
 
     # Training has finished
-    filename = 'model-final-step-%d-val-%g.ckpt' % (i, val_error)
+    filename = 'model-final-step-%d-val-%g.ckpt' % (i, val_error[1])
     checkpoint_path = os.path.join(args.logdir, filename)
     model.save_weights(checkpoint_path)
     print ('Final model saved as {}', filename)
