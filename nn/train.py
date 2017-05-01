@@ -6,9 +6,12 @@ Train the neural network to predict location and orientation of obstacles
 Example:
     python train.py --data_dir=/vol/dataset2/Didi-Release-2/Tracklets/1pc/15pc/
 
-TODO: This will evolve over time to handle more than 1 bag, to become a ROS subscriber, etc.
 
 """
+
+# TODO: This will evolve over time to handle more than 1 bag, to become a ROS subscriber, etc.
+# TODO: Need to predict obstacle l,w,h
+# TODO: Train to recognise more than one obstacle
 
 import os
 import nn

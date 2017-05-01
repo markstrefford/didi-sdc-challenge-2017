@@ -1,19 +1,23 @@
 """
-train.py
+test.py
 
-Train the neural network to predict location and orientation of obstacles
+Predict obstacles based on data
 
 Example:
     python train.py --data_dir=/vol/dataset2/Didi-Release-2/Tracklets/1pc/15pc/
 
-TODO: This will evolve over time to handle more than 1 bag, to become a ROS subscriber, etc.
 
 """
+
+#TODO: This will evolve over time to handle more than 1 obstacle
+#TODO: Subscribe to ROS messages
 
 import os
 import nn
 import argparse
 from data_reader import DataReader
+from tracklets.parse_tracklet import Tracklet, parse_xml
+from tracklets.generate_tracklet import *
 
 # TODO: Remove what's not needed here
 BATCH_SIZE = 32
@@ -56,6 +60,7 @@ def get_arguments():
 
 def main():
     args=get_arguments()
+    tracklet_file = '/vol/didi/dataset2/tracklets/1pc/10pc/predicted_tracklets.xml'
 
     start_step = 0
     LossHistory, model = nn.top_nn(weights_path=args.restore_from)
@@ -65,13 +70,28 @@ def main():
     print('test.py: args.data_dir={}'.format(args.data_dir))
     data_reader = DataReader(args.data_dir)
 
-    xs, _ = data_reader.load_val_batch(batch_size=args.batch_size)
+    xs, ys = data_reader.load_val_batch(batch_size=args.batch_size)
     predictions = model.predict(xs, batch_size=BATCH_SIZE)
-    print (predictions)
 
-    
+    length = 4.241800
+    width = 1.447800
+    height = 1.574800
+    t = 0
+    collection = TrackletCollection()
+    for p in predictions:
+        print ('Predicted: {}, Actual: {}'.format(predictions[t], ys[t]))
+        tx = p[0]
+        ty = p[1]
+        tz = p[2]
+        obs_tracklet = Tracklet( object_type='Car', l=length, w=width, h=height, first_frame=t )
+        obs_tracklet.poses = [
+            {'tx':tx,'ty':ty,'tz':tz,'rx':0,'ry':0,'rz':0}
+        ]
+        collection.tracklets.append(obs_tracklet)
+        t += 1
 
-
+    ## save
+    collection.write_xml(tracklet_file)
 
 if __name__ == '__main__':
     main()
