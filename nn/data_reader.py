@@ -92,11 +92,17 @@ class DataReader(object):
 
         self.num_samples = len(xs)
 
-        self.train_xs = xs[:int(len(xs) * 0.8)]
-        self.train_ys = ys[:int(len(xs) * 0.8)]
+        # self.train_xs = xs[:int(len(xs) * 0.8)]
+        # self.train_ys = ys[:int(len(xs) * 0.8)]
+        #
+        # self.val_xs = xs[-int(len(xs) * 0.2):]
+        # self.val_ys = ys[-int(len(xs) * 0.2):]
 
-        self.val_xs = xs[-int(len(xs) * 0.2):]
-        self.val_ys = ys[-int(len(xs) * 0.2):]
+        self.train_xs = xs  #[:int(len(xs) * 0.8)]
+        self.train_ys = ys  #[:int(len(xs) * 0.8)]
+
+        self.val_xs = xs    #[-int(len(xs) * 0.2):]
+        self.val_ys = ys    #[-int(len(xs) * 0.2):]
 
         self.num_train_samples = len(self.train_xs)
         self.num_val_samples = len(self.val_xs)
