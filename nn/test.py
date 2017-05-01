@@ -58,42 +58,20 @@ def main():
     args=get_arguments()
 
     start_step = 0
-    LossHistory, model = nn.top_nn()
-    summary = model.summary()
-    print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
+    LossHistory, model = nn.top_nn(weights_path=args.restore_from)
+    #summary = model.summary()
+    #print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 
+    print('test.py: args.data_dir={}'.format(args.data_dir))
     data_reader = DataReader(args.data_dir)
 
-    #FIXME: Based on number of steps, convert to number of epochs
-    for i in range(start_step, start_step + args.num_steps):
-        xs, ys = data_reader.load_train_batch(batch_size=args.batch_size)
-        train_error = model.train_on_batch(xs, ys)
-        print ('{}/{}: Training loss: {}'.format(i, start_step + args.num_steps, train_error))
+    xs, _ = data_reader.load_val_batch(batch_size=args.batch_size)
+    predictions = model.predict(xs, batch_size=BATCH_SIZE)
+    print (predictions)
 
-        if i % 10 == 0:
-            xs, ys = data_reader.load_val_batch(batch_size=args.batch_size)
-            val_error = model.test_on_batch(xs, ys)
-            print ('{}/{}: Validation loss: {}'.format(i, start_step + args.num_steps, val_error))
+    
 
-            if i > 0 and i % args.checkpoint_every == 0:
-                if not os.path.exists(args.logdir):
-                    os.makedirs(args.logdir)
-                filename = 'model-step-%d-val-%g.ckpt' % (i, val_error[1])
-                checkpoint_path = os.path.join(args.logdir, filename)
-                model.save(checkpoint_path)
-                print('Model saved in file: {}'.format(filename))
 
-            # TODO - Add in exit if vol_loss < min_loss
-
-            # TODO - Write logs (if we can in Keras!)
-
-            # TODO - Write loss history and other metrics for graphing...
-
-    # Training has finished
-    filename = 'model-final-step-%d-val-%g.ckpt' % (i, val_error[1])
-    checkpoint_path = os.path.join(args.logdir, filename)
-    model.save_weights(checkpoint_path)
-    print ('Final model saved as {}', filename)
 
 if __name__ == '__main__':
     main()

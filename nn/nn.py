@@ -71,6 +71,7 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     x = inputs # Initial tensor
     num_conv_layers = 3  # For now...
     nf = num_filters
+
     # Create CNN layers, each one has 2x the features of the previous one (FIXME: Not sure if this is the best approach, let's train something for now!!)
     for layer in range(num_conv_layers):
         print ('Layer {}, num_filters {}'.format(layer, nf))
@@ -84,6 +85,7 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
         x=Dropout(0.25)(x)
         print ('Layer: {}, tensor: {}'.format(layer, x))
         nf *= 2
+
     x=Flatten()(x)
     x=Dense(1024, W_regularizer = w_regularizer, b_regularizer = b_regularizer)(x)
     x=Activation(activation)(x)
@@ -92,10 +94,17 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     x=Activation(activation)(x)
     predictions=x   # tx, ty, tz, rx, ry, rz
                     # FIXME - What's the output of this CNN??  Candidates for objects I expect?
+
     model = Model(input=inputs, output=predictions)
     model.compile(optimizer='rmsprop',
                   loss='mean_squared_error',    #FIXME: Just for now...
                   metrics=['accuracy'])
+
+    if weights_path != None:
+        print ('Loading weights from {}'.format(weights_path))
+        model.load_weights(weights_path)
+        print ('Loaded!')
+
     return LossHistory, model   # FIXME: Return both for now, handle LossHistory for merged NN later
 
 
