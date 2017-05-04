@@ -60,7 +60,7 @@ def get_arguments():
 
 def main():
     args=get_arguments()
-    tracklet_file = '/vol/didi/dataset2/tracklets/1pc/10pc/predicted_tracklets.xml'
+    tracklet_file = '/vol/dataset2/Didi-Release-2/Tracklets/1pc/10pc/predicted_tracklets.xml'
 
     start_step = 0
     LossHistory, model = nn.top_nn(weights_path=args.restore_from)
