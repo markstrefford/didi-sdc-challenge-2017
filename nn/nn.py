@@ -55,7 +55,6 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
             self.losses.append(logs.get('loss'))
 
     inputs = Input(shape=(top_x, top_y, top_z))
-    print (inputs)
 
     conv1 = Conv2D(32, (2,2), activation='relu', padding='same')(inputs)
     conv1 = Dropout(0.2)(conv1)
@@ -84,7 +83,8 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
 
     #FIXME: Currently only 2 classes (background and obstacle)
     #FIXME: Shouldn't this be a softmax!!
-    prediction_obj = Conv2D(2, (2, 2), activation='relu', padding='same')(merge5obj)
+    conv6obj = Conv2D(2, (2, 2), activation='relu', padding='same')(merge5obj)
+    prediction_obj = Activation('softmax')(conv6obj)
 
     # Bounding box prediction
     # Objectness (is this the center of an object or not
