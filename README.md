@@ -17,6 +17,7 @@ The following packages are dependencies:
 * MayAvi (Provided in Ubuntu 16.04)
 * matplotlib
 * Catkin (Provided by ROS Kinetic)
+* Velodyne drivers (see [here](velodybe-tutorials/Installing-Velodyne-Drivers-On-Ros-Kinetic-Ubuntu-16.04-LTS-Xenial.md) for installation)
 
 
 ## Training

@@ -82,7 +82,6 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     merge5obj = add([conv1, conv5obj])
 
     #FIXME: Currently only 2 classes (background and obstacle)
-    #FIXME: Shouldn't this be a softmax!!
     conv6obj = Conv2D(2, (2, 2), activation='relu', padding='same')(merge5obj)
     prediction_obj = Activation('softmax')(conv6obj)
 
@@ -98,7 +97,7 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     conv5box = Dropout(0.2)(conv5box)
     merge5box = add([conv1, conv5box])
 
-    #FIXME: This is a regressor??? so what does it return...??
+    #FIXME: This is a regressor??? so what does/should it return...??
     prediction_box = Conv2D(2, (2, 2), activation='relu', padding='same')(merge5box)
 
     # Setup loss, etc. and
