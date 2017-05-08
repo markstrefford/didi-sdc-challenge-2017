@@ -30,7 +30,6 @@ def get_nearest_timestamp_and_index(data, timestamp):
     data_timestamp = data.ix[index].timestamp
     return data_timestamp, index
 
-
 # Get info from tracklets
 #TODO Create a utility function
 def get_obstacle_from_tracklet(tracklet_file):
@@ -45,7 +44,6 @@ def get_obstacle_from_tracklet(tracklet_file):
                 'rotation': rotation
             })          # TODO: Add in other tracklets info as required
     return obj_size, tracks
-
 
 # Use file-based training for now, single bag file
 # TODO: Make this work with multiple bags
@@ -82,9 +80,10 @@ class DataReader(object):
             xs.append(lidar_file)
             timestamp = int(os.path.basename(file).replace('.npy', ''))
             camera_timestamp, index = get_nearest_timestamp_and_index(camera_data, timestamp)
-            t = tracks[index]['translation']
-            r = tracks[index]['rotation']
-            y = np.array(obj_size, t, r)
+            # t = tracks[index]['translation']
+            # r = tracks[index]['rotation']
+            # FIXME: Size is the same for all tracks...?
+            y = np.array([obj_size, tracks[index]])
             ys.append(y)
 
             total +=1
@@ -106,19 +105,17 @@ class DataReader(object):
         self.num_train_samples = len(self.train_xs)
         self.num_val_samples = len(self.val_xs)
 
-
     def _predict_obj_y(self, obj_size, track):
-        obj_y = np.zeros(top_x, top_y)
-        obj_y = draw_track_on_top(obj_y, obj_size, fill=-1)
+        obj_y = np.zeros((top_x, top_y))
+        obj_y = draw_track_on_top(obj_y, obj_size, track, fill=-1)
         return obj_y
 
-
     def _predict_box_y(self, obj_size, track):
-        box_y = np.zeros(top_x, top_y)
-        box_y = draw_track_on_top(box_y, obj_size)   # TODO - This needs reworking!! Assume we'll predict bbox by start location in our NN (todo!!)
+        box_y = np.zeros((top_x, top_y))
+        box_y = draw_track_on_top(box_y, obj_size, track)   # TODO - This needs reworking!! Assume we'll predict bbox by start location in our NN (todo!!)
         return box_y
 
-
+    # TODO - These 2 functions are not DRY!!!
     def load_train_batch(self, batch_size):
         x_out = []
         y_out_obj = []
@@ -128,15 +125,15 @@ class DataReader(object):
             file = self.train_xs[index]
             pointcloud = np.load(file)
             x_out.append(pointcloud)
-            #FIXME: Prediction code is single object only at the moment, also needs rotation
+            # FIXME: Prediction code is single object only at the moment
             obj_size = self.train_ys[index][0]
-            obj_trans = self.train_yx[index][1]
-            y_out_obj.append(self._predict_obj_y(obj_size, obj_trans))     # Object prediction output (sphere??)
-            y_out_box.append(self._predict_box_y(obj_size, obj_trans))     # Output of prediction bounding box
+            obj_track = self.train_ys[index][1]
+            y_out_obj.append(self._predict_obj_y(obj_size, obj_track))     # Object prediction output (sphere??)
+            y_out_box.append(self._predict_box_y(obj_size, obj_track))     # Output of prediction bounding box
         self.train_batch_pointer += batch_size
         return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
 
-
+    # TODO - These 2 functions are not DRY!!!
     def load_val_batch(self, batch_size):
         x_out = []
         y_out_obj = []
@@ -146,11 +143,11 @@ class DataReader(object):
             file = self.val_xs[index]
             pointcloud = np.load(file)
             x_out.append(pointcloud)
-            #FIXME: Prediction code is single object only at the moment, also needs rotation
+            # FIXME: Prediction code is single object only at the moment
             obj_size = self.val_ys[index][0]
-            obj_trans = self.val_yx[index][1]
-            y_out_obj.append(self._predict_obj_y(obj_size, obj_trans))    # Object prediction output (sphere??)
-            y_out_box.append(self._predict_box_y(obj_size, obj_trans))    # Output of prediction bounding box
+            obj_track = self.val_ys[index][1]
+            y_out_obj.append(self._predict_obj_y(obj_size, obj_track))    # Object prediction output (sphere??)
+            y_out_box.append(self._predict_box_y(obj_size, obj_track))    # Output of prediction bounding box
         self.val_batch_pointer += batch_size
         return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
 
