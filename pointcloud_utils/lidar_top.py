@@ -15,24 +15,9 @@ See Bo li's paper:
 import os
 os.environ['HOME'] = '/root'
 
-SEED = 202
-
-
-# std libs
-import glob
-
-
-# num libs
-import math
-import random
 import numpy as np
-random.seed(SEED)
-np.random.seed(SEED)
-
 import cv2
-#import mayavi.mlab as mlab
 
-#from pointcloud_utils.lidar import *
 from lidar import *
 
 ##
@@ -226,7 +211,7 @@ def track_to_top_box(obj_size, track):
     return top_boxes
 
 
-def draw_track_on_top(image, obj_size, track, color=(255,255,255)):
+def draw_track_on_top(image, obj_size, track, color=(255,255,255), fill = 2):
 
     top_boxes = track_to_top_box(obj_size, track)
     is_reshape = top_boxes.shape==(4)
@@ -242,7 +227,7 @@ def draw_track_on_top(image, obj_size, track, color=(255,255,255)):
     y1 = b[1]
     x2 = b[2]
     y2 = b[3]
-    cv2.rectangle(image, (x1,y1), (x2,y2),color, 2, cv2.LINE_AA)
+    cv2.rectangle(image, (x1,y1), (x2,y2),color, fill, cv2.LINE_AA)
 
     return image
 

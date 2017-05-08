@@ -15,14 +15,13 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
 from tracklets.parse_tracklet import Tracklet, parse_xml
+from pointcloud_utils.lidar_top import draw_track_on_top
 
-import nn
-import tensorflow as tf
 import numpy as np
 import pandas as pd
-from keras.models import Model, Sequential
 import glob
 
+top_x, top_y, top_z = 400, 400, 8
 
 # Get camera timestamp and index closest to the pointcloud timestamp
 #TODO Create a utility function
@@ -85,7 +84,7 @@ class DataReader(object):
             camera_timestamp, index = get_nearest_timestamp_and_index(camera_data, timestamp)
             t = tracks[index]['translation']
             r = tracks[index]['rotation']
-            y = np.array([t[0], t[1], t[2], r[0], r[1], r[2]])
+            y = np.array(obj_size, t, r)
             ys.append(y)
 
             total +=1
@@ -108,28 +107,50 @@ class DataReader(object):
         self.num_val_samples = len(self.val_xs)
 
 
+    def _predict_obj_y(self, obj_size, track):
+        obj_y = np.zeros(top_x, top_y)
+        obj_y = draw_track_on_top(obj_y, obj_size, fill=-1)
+        return obj_y
+
+
+    def _predict_box_y(self, obj_size, track):
+        box_y = np.zeros(top_x, top_y)
+        box_y = draw_track_on_top(box_y, obj_size)   # TODO - This needs reworking!! Assume we'll predict bbox by start location in our NN (todo!!)
+        return box_y
+
+
     def load_train_batch(self, batch_size):
         x_out = []
-        y_out = []
+        y_out_obj = []
+        y_out_box = []
         for i in range(0, batch_size):
             index = (self.train_batch_pointer + i) % self.num_train_samples
             file = self.train_xs[index]
             pointcloud = np.load(file)
             x_out.append(pointcloud)
-            y_out.append(self.train_ys[index])
+            #FIXME: Prediction code is single object only at the moment, also needs rotation
+            obj_size = self.train_ys[index][0]
+            obj_trans = self.train_yx[index][1]
+            y_out_obj.append(self._predict_obj_y(obj_size, obj_trans))     # Object prediction output (sphere??)
+            y_out_box.append(self._predict_box_y(obj_size, obj_trans))     # Output of prediction bounding box
         self.train_batch_pointer += batch_size
-        return np.array(x_out), np.array(y_out)
+        return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
 
 
     def load_val_batch(self, batch_size):
         x_out = []
-        y_out = []
+        y_out_obj = []
+        y_out_box = []
         for i in range(0, batch_size):
             index = (self.val_batch_pointer + i) % self.num_val_samples
             file = self.val_xs[index]
             pointcloud = np.load(file)
             x_out.append(pointcloud)
-            y_out.append(self.val_ys[index])
+            #FIXME: Prediction code is single object only at the moment, also needs rotation
+            obj_size = self.val_ys[index][0]
+            obj_trans = self.val_yx[index][1]
+            y_out_obj.append(self._predict_obj_y(obj_size, obj_trans))    # Object prediction output (sphere??)
+            y_out_box.append(self._predict_box_y(obj_size, obj_trans))    # Output of prediction bounding box
         self.val_batch_pointer += batch_size
-        return np.array(x_out), np.array(y_out)
+        return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
 
