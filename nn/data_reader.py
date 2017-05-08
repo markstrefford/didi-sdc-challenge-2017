@@ -130,6 +130,8 @@ class DataReader(object):
             obj_track = self.train_ys[index][1]
             y_out_obj.append(self._predict_obj_y(obj_size, obj_track))     # Object prediction output (sphere??)
             y_out_box.append(self._predict_box_y(obj_size, obj_track))     # Output of prediction bounding box
+        y_out_obj = np.stack((y_out_obj, y_out_obj, y_out_obj)).astype(np.uint8)
+        y_out_box = np.stack((y_out_box, y_out_box, y_out_box)).astype(np.uint8)
         self.train_batch_pointer += batch_size
         return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
 
@@ -148,6 +150,8 @@ class DataReader(object):
             obj_track = self.val_ys[index][1]
             y_out_obj.append(self._predict_obj_y(obj_size, obj_track))    # Object prediction output (sphere??)
             y_out_box.append(self._predict_box_y(obj_size, obj_track))    # Output of prediction bounding box
+        y_out_obj = np.stack((y_out_obj, y_out_obj, y_out_obj)).astype(np.uint8)
+        y_out_box = np.stack((y_out_box, y_out_box, y_out_box)).astype(np.uint8)
         self.val_batch_pointer += batch_size
         return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
 
