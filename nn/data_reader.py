@@ -107,13 +107,19 @@ class DataReader(object):
 
     def _predict_obj_y(self, obj_size, track):
         obj_y = np.zeros((top_x, top_y))
-        obj_y = draw_track_on_top(obj_y, obj_size, track, fill=-1)
+        obj_y = draw_track_on_top(obj_y, obj_size, track, color=(255), fill=-1)
         return obj_y
 
     def _predict_box_y(self, obj_size, track):
         box_y = np.zeros((top_x, top_y))
-        box_y = draw_track_on_top(box_y, obj_size, track)   # TODO - This needs reworking!! Assume we'll predict bbox by start location in our NN (todo!!)
+        box_y = draw_track_on_top(box_y, obj_size, track, color=(255))   # TODO - This needs reworking!! Assume we'll predict bbox by start location in our NN (todo!!)
         return box_y
+
+    def convert_image_to_classes(self, image):
+        classes=np.zeros((image.shape[0], image.shape[1], 2))
+        classes[:,:,1] = image/255      # Assume 255 is the colour we've used to denote an object of class 1?
+        classes[:,:,0] = 1-classes[:,:,1] # Swap 0s for 1s for class 0 (should be just the background!)
+        return classes
 
     # TODO - These 2 functions are not DRY!!!
     def load_train_batch(self, batch_size):
@@ -128,10 +134,8 @@ class DataReader(object):
             # FIXME: Prediction code is single object only at the moment
             obj_size = self.train_ys[index][0]
             obj_track = self.train_ys[index][1]
-            y_out_obj.append(self._predict_obj_y(obj_size, obj_track))     # Object prediction output (sphere??)
-            y_out_box.append(self._predict_box_y(obj_size, obj_track))     # Output of prediction bounding box
-        y_out_obj = np.stack((y_out_obj, y_out_obj, y_out_obj)).astype(np.uint8)
-        y_out_box = np.stack((y_out_box, y_out_box, y_out_box)).astype(np.uint8)
+            y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
+            y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.train_batch_pointer += batch_size
         return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
 
@@ -148,10 +152,8 @@ class DataReader(object):
             # FIXME: Prediction code is single object only at the moment
             obj_size = self.val_ys[index][0]
             obj_track = self.val_ys[index][1]
-            y_out_obj.append(self._predict_obj_y(obj_size, obj_track))    # Object prediction output (sphere??)
-            y_out_box.append(self._predict_box_y(obj_size, obj_track))    # Output of prediction bounding box
-        y_out_obj = np.stack((y_out_obj, y_out_obj, y_out_obj)).astype(np.uint8)
-        y_out_box = np.stack((y_out_box, y_out_box, y_out_box)).astype(np.uint8)
+            y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
+            y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.val_batch_pointer += batch_size
         return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
 

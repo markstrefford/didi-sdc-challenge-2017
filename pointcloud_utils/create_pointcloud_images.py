@@ -106,7 +106,6 @@ if __name__ == '__main__':
     camera_data = pd.read_csv(camera_csv)   #['timestamp']
     obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)    # FIXME Single obstacle per tracklet file
 
-    #fig   = mlab.figure(figure=None, bgcolor=(0,0,0), fgcolor=None, engine=None, size=(500, 500))
     for file in sorted(glob.glob(lidar_dir + '/*.npy')):
         name = os.path.basename(file).replace('.npy','')
 
@@ -137,22 +136,10 @@ if __name__ == '__main__':
         cv2.imwrite(surround_img_file, surround_img)
         np.save(surround_file,surround)
 
-        #now add in object bounding box for display purposes
+        # now add in object bounding box for display purposes
         top_img = draw_track_on_top(top_img, obj_size, tracks[index], color=(0,0, 255))
         # surround_img = draw_box3d_on_surround(surround_img, obj_size, tracks[index], color=(255,255,255))
 
-        #print ('main(): show mlab images')
-        #mlab.clf(fig)
-        #draw_didi_lidar(fig, lidar, is_grid=1, is_axis=1)
-
-        #if len(boxes3d)!=0:
-        #    draw_didi_boxes3d(fig, boxes3d)
-        #    draw_box3d_on_top(top_img, boxes3d, color=(255,255,255))
-
-        #azimuth,elevation,distance,focalpoint = MM_PER_VIEW1
-        #mlab.view(azimuth,elevation,distance,focalpoint)
-        #
-        #mlab.show(1)
         if show_images:
             imshow('top_img',top_img,3)
             imshow('surround_img',surround_img,3)
