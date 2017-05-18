@@ -57,6 +57,7 @@ def get_obstacle_from_tracklet(tracklet_file):
                 'translation': translation,
                 'rotation': rotation
             })          # TODO: Add in other tracklets info as required
+    print('get_obstacle_from_tracklet(): Tracks={}'.format(tracks))
     return obj_size, tracks
 
 # main #################################################################
