@@ -21,11 +21,36 @@
 | 1/23  | Capture vehicle reverses a few meters then stops.  Obstacle moves across in front like at a junction.  There's an obstacle to the left of the capture vehicle.  | 9  |   |
 | 1/26  |  Capture vehicle stopped.  Obst appears from the right and stops like at a junction.  Capture vehicle moves off, turns left and keeps going |  23 |   |
 |   |   |   |   |
-|   |   |   |   |
-|   |   |   |   |
-|   |   |   |   |
-|   |   |   |   |
-|   |   |   |   |
-|   |   |   |   |
+| 2/1  |  Capture vehicle parked behind obstacle, not quite in line.  Obstacles to the right (trees?) | 66  |   |
+| 2/2  | Short version of 2/1 ?  |  17 |   |
+| 2/3_f  | Same position as above.  Obst vehicle drives off (then stops in the distance?)  | 21  |   |
+| 2/6_f  | Same starting position as above.  Capture vehicle turns left until obst vehicle comes into view  | 6  |   |
+| 2/8_f  | Capture vehicle on right of obst.  Drives past it, other trees, etc around.  Banking on the right  | 4  |   |
+|  2/11_f | Capture vehicle behind obst.  They both drive off, turning left then straight then turning right, then stopping  | 43  |   |
+|  2/12_f | Capture vehicle fulls up behind obst. Grass bank to the left.  They sit for a while, then both drive off straight, turn 180deg right, then drive straight.  Turn right at the end and stop behind the obst vehicle | 78  |   |
+| 2/13 | Capture vehicle facing away from grass bank.  Obst vehicle passes in front | 10 | |
+| 2/14_f | Similar to 2/13 but obst starts on the right of capture vehicle and drives away (don't really see it in the camera) | 4 | |
+| 2/17 | Starts like 2/13.  Obst pulls up to left of capture vehicle, which then drives off, turns to the left and then drives straight | 22 | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
+| | | | |
 
 
+
+
+
+Obstacles:
+
+1/* - BMW X3
+2/* - Toyota Prius
