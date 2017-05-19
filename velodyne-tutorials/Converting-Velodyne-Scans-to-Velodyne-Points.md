@@ -6,11 +6,13 @@ In separate terminal sessions run the following:
 
 Run the nodelet:
 
-    rosrun nodelet nodelet standalone velodyne_pointcloud/CloudNodelet
+    ﻿roslaunch velodyne_pointcloud 32e_points.launch _calibration:=/opt/ros/kinetic/share/velodyne_pointcloud/params/32db.yaml
     
 Use rosbag record to record the point cloud messages:
 
     rosrun rosbag record -O pointcloud.bag /velodyne_points
+
+Note that `--all` records all topics in the bag.
 
 And finally play your bag containing the VelodyneScan:
 
