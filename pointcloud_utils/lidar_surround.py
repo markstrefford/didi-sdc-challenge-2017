@@ -137,11 +137,16 @@ def draw_box3d_on_surround(image, obj_size, track, color=(255,255,255), fill = 2
     if is_reshape:
         surround_boxes = surround_boxes.reshape(1,4)
 
-    num = len(surround_boxes)
-    for n in range(num):
-        b = surround_boxes[n]
-        x1,y1,x2,y2  = b
-        cv2.rectangle(image,(x1,y1),(x2,y2),color,fill,cv2.LINE_AA)
+    # num = len(surround_boxes)
+    # for n in range(num):
+    b = surround_boxes   #[n]
+    x1 = b[0]
+    y1 = b[1]
+    x2 = b[2]
+    y2 = b[3]
+    cv2.rectangle(image,(x1,y1),(x2,y2),color,fill,cv2.LINE_AA)
 
+    print ('draw_track_on_top(): Track={}, Box=[{},{}]/[{},{}]'.format(track, x1, y1, x2, y2))
+    return image
 
 
