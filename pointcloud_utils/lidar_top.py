@@ -156,10 +156,14 @@ def create_box3d_from_tracklet(obj_size, tracklet):  # TODO - Move to a utility 
     obj_center_y = obj_center[1]
     obj_center_z = obj_center[2]
 
-    x0, y0, z0 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)       # Top left front
-    x1, y1, z1 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)       # Top right back
-    x2, y2, z2 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)       # Bottom left front
-    x3, y3, z3 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)       # Bottom right back
+    x0, y0, z0 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1]), obj_center_z + (obj_size[0] / 2.)       # Top left front
+    x1, y1, z1 = obj_center_x - (obj_size[2] / 2.), obj_center_y                , obj_center_z + (obj_size[0] / 2.)       # Top right back
+    x2, y2, z2 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1]), obj_center_z - (obj_size[0] / 2.)       # Bottom left front
+    x3, y3, z3 = obj_center_x - (obj_size[2] / 2.), obj_center_y                , obj_center_z - (obj_size[0] / 2.)       # Bottom right back
+    # x0, y0, z0 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)       # Top left front
+    # x1, y1, z1 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)       # Top right back
+    # x2, y2, z2 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)       # Bottom left front
+    # x3, y3, z3 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)       # Bottom right back
 
     # Other corners or completeness - needed for the box3d code later
     x4, y4, z4 = obj_center_x - (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)
