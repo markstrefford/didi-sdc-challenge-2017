@@ -79,7 +79,34 @@ def lidar_to_surround(lidar):
 
 
 ## drawing ####
-def box3d_to_surround_box(boxes3d):
+def create_box3d_from_tracklet(obj_size, tracklet):  # TODO - Move to a utility function
+    obj_center = tracklet['translation']
+    obj_center_x = obj_center[0]
+    obj_center_y = obj_center[1]
+    obj_center_z = obj_center[2]
+
+    x0, y0, z0 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.),  obj_center_z + (obj_size[0] / 2.)       # Top left front
+    x1, y1, z1 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1]),       obj_center_z + (obj_size[0] / 2.)       # Top right back
+    x2, y2, z2 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.),  obj_center_z - (obj_size[0] / 2.)       # Bottom left front
+    x3, y3, z3 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1]),       obj_center_z - (obj_size[0] / 2.)       # Bottom right back
+    # x0, y0, z0 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)       # Top left front
+    # x1, y1, z1 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)       # Top right back
+    # x2, y2, z2 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)       # Bottom left front
+    # x3, y3, z3 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)       # Bottom right back
+
+    # Other corners or completeness - needed for the box3d code later
+    x4, y4, z4 = obj_center_x - (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.),  obj_center_z + (obj_size[0] / 2.)
+    x5, y5, z5 = obj_center_x + (obj_size[2] / 2.), obj_center_y - (obj_size[1]),       obj_center_z + (obj_size[0] / 2.)
+    x6, y6, z6 = obj_center_x - (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.),  obj_center_z - (obj_size[0] / 2.)
+    x7, y7, z7 = obj_center_x + (obj_size[2] / 2.), obj_center_y - (obj_size[1]),       obj_center_z - (obj_size[0] / 2.)
+
+    box3d = np.array([[x0, y0, z0], [x1, y1, z1], [x2, y2, z2], [x3, y3, z3],
+                      [x4, y4, z4], [x5, y5, z5], [x6, y6, z6], [x7, y7, z7]])
+    return box3d
+
+## drawing ####
+def track_to_surround_box(obj_size, track):
+    boxes3d = create_box3d_from_tracklet(obj_size, track)
     is_reshape = boxes3d.shape==(8,3) #support for single box3d
 
     if is_reshape:
@@ -104,9 +131,8 @@ def box3d_to_surround_box(boxes3d):
 
     return surround_boxes
 
-def draw_box3d_on_surround(image, boxes3d, color=(255,255,255)):
-
-    surround_boxes = box3d_to_surround_box(boxes3d)
+def draw_box3d_on_surround(image, obj_size, track, color=(255,255,255), fill = 2):
+    surround_boxes = track_to_surround_box(obj_size, track)
     is_reshape = surround_boxes.shape==(4)
     if is_reshape:
         surround_boxes = surround_boxes.reshape(1,4)
@@ -115,7 +141,7 @@ def draw_box3d_on_surround(image, boxes3d, color=(255,255,255)):
     for n in range(num):
         b = surround_boxes[n]
         x1,y1,x2,y2  = b
-        cv2.rectangle(image,(x1,y1),(x2,y2),color,1,cv2.LINE_AA)
+        cv2.rectangle(image,(x1,y1),(x2,y2),color,fill,cv2.LINE_AA)
 
 
 

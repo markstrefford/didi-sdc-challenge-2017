@@ -159,24 +159,23 @@ def create_box3d_from_tracklet(obj_size, tracklet):  # TODO - Move to a utility 
     x0, y0, z0 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.),  obj_center_z + (obj_size[0] / 2.)       # Top left front
     x1, y1, z1 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1]),       obj_center_z + (obj_size[0] / 2.)       # Top right back
     x2, y2, z2 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.),  obj_center_z - (obj_size[0] / 2.)       # Bottom left front
-    x3, y3, z3 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1]) ,      obj_center_z - (obj_size[0] / 2.)       # Bottom right back
+    x3, y3, z3 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1]),       obj_center_z - (obj_size[0] / 2.)       # Bottom right back
     # x0, y0, z0 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)       # Top left front
     # x1, y1, z1 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)       # Top right back
     # x2, y2, z2 = obj_center_x + (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)       # Bottom left front
     # x3, y3, z3 = obj_center_x - (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)       # Bottom right back
 
     # Other corners or completeness - needed for the box3d code later
-    x4, y4, z4 = obj_center_x - (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)
-    x5, y5, z5 = obj_center_x + (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z + (obj_size[0] / 2.)
-    x6, y6, z6 = obj_center_x - (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)
-    x7, y7, z7 = obj_center_x + (obj_size[2] / 2.), obj_center_y - (obj_size[1] / 2.), obj_center_z - (obj_size[0] / 2.)
+    x4, y4, z4 = obj_center_x - (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.),  obj_center_z + (obj_size[0] / 2.)
+    x5, y5, z5 = obj_center_x + (obj_size[2] / 2.), obj_center_y - (obj_size[1]),       obj_center_z + (obj_size[0] / 2.)
+    x6, y6, z6 = obj_center_x - (obj_size[2] / 2.), obj_center_y + (obj_size[1] / 2.),  obj_center_z - (obj_size[0] / 2.)
+    x7, y7, z7 = obj_center_x + (obj_size[2] / 2.), obj_center_y - (obj_size[1]),       obj_center_z - (obj_size[0] / 2.)
 
     box3d = np.array([[x0, y0, z0], [x1, y1, z1], [x2, y2, z2], [x3, y3, z3],
                       [x4, y4, z4], [x5, y5, z5], [x6, y6, z6], [x7, y7, z7]])
     return box3d
 
 def track_to_top_box(obj_size, track):
-
     #FIXME: Add back in support for multiple objects!!
     boxes3d = create_box3d_from_tracklet(obj_size, track)
 
@@ -216,7 +215,6 @@ def track_to_top_box(obj_size, track):
 
 
 def draw_track_on_top(image, obj_size, track, color=(255,255,255), fill = 2):
-
     top_boxes = track_to_top_box(obj_size, track)
     is_reshape = top_boxes.shape==(4)
     if is_reshape:
