@@ -86,6 +86,7 @@ if __name__ == '__main__':
 
     show_images = False if args.pc_only else True
 
+    # TODO - use os.path.join here instead!!
     base_dir          = args.indir
     lidar_dir         = base_dir + '/pointcloud'
     radar_dir         = base_dir + '/radar_pointcloud'
@@ -100,8 +101,8 @@ if __name__ == '__main__':
     mark_dir_surround = base_dir + '/processed/mark-surround-box'
     avi_file_surround = base_dir + '/processed/mark-surround-box.avi'
 
-    tracklet_file      = base_dir + 'tracklet_labels.xml'
-    camera_csv        = base_dir + 'capture_vehicle_camera.csv'
+    tracklet_file      = base_dir + '/tracklet_labels.xml'
+    camera_csv        = base_dir + '/capture_vehicle_camera.csv'
 
     timestamp_offset = args.time_offset
 

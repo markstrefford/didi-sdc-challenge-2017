@@ -1,4 +1,4 @@
-directory,bag,time_offset
+directory,bag,time_offset, start_frame, end_frame
 1,2,0
 1,3,0
 1,4_f,0
@@ -16,6 +16,7 @@ directory,bag,time_offset
 1,20,0
 1,21_f,0
 1,23,-30
-1,26,-30
+1,26,-30,0,190
+1,26_2,0,190,
 
 

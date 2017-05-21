@@ -18,8 +18,8 @@
 |  1/19 | Similar to 1/18. Cars moving quicker again?  |  11 | RTK  ahead of PCL.  t=-12  |
 | 1/20  | Capture car following obstacle (both moving), then both stop (capture car behind obstacle car)  | 18  |  Timestamp offset makes no difference here as both cars are moving!! *May not use for training. Look at modifying x by a percentage in LIDAR frame, only would solve issues when cars are both moving* |
 |  1/21_f | Capture car behind obstacle. Both start to move off together  | 4  |  Timestamp offset makes no difference here as both cars are moving!! *May not use for training. Look at modifying x by a percentage in LIDAR frame, only would solve issues when cars are both moving* |
-| 1/23  | Capture vehicle reverses a few meters then stops.  Obstacle moves across in front like at a junction.  There's an obstacle to the left of the capture vehicle.  | 9  |   |
-| 1/26  |  Capture vehicle stopped.  Obst appears from the right and stops like at a junction.  Capture vehicle moves off, turns left and keeps going |  23 |   |
+| 1/23  | Capture vehicle reverses a few meters then stops.  Obstacle moves across in front like at a junction.  There's an obstacle to the left of the capture vehicle.  | 9  |  t=-30 |
+| 1/26 / 1/26_2  |  Capture vehicle stopped.  Obst appears from the right and stops like at a junction.  Capture vehicle moves off, turns left and keeps going |  23 | t=-30 will work up to circa camera frame 190 and then it goes off track as the capture vehicle moves while the obstacle stays still.  With t=0, works ok mostly in top view from frame 190, but issues in surround view (it's not tracking the car correctly)  |
 |   |   |   |   |
 | 2/1  |  Capture vehicle parked behind obstacle, not quite in line.  Obstacles to the right (trees?) | 66  |   |
 | 2/2  | Short version of 2/1 ?  |  17 |   |
