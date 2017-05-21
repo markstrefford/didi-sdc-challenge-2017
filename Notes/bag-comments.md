@@ -12,12 +12,12 @@
 | 1/11  | Same as 10, but obstacle on left of capture vehicle  | 11  |  Works well with default settings |
 | 1/13  | Similar to 11, but capture vehicle drives past obstacle. Obj car facing capture vehicle | 11  | Works well with default settings  |
 | 1/14_f  | Obstacle on right of capture vehicle, starts close together and capture vehicle drives away  |  5 | Mid-frames split car across surround view (see 1/10)  |
-| 1/15  |  Capture vehicle driving towards obstacle.  Passes it on the right. Obs car facing capture chicle (similar to 1/13??) |  7 |  RTK data not aligned with point cloud (maybe 5 frames ahead?) |
-|  1/17 | Simialr to 1/15 but obstacle car is moving  |  7 |  RTK circa 5 frames ahead of PCL |
-| 1/18  | Similar to 1/17 but cars moving quicker  |  7 |   |
-|  1/19 | Similar to 1/18. Cars moving quicker again?  |  11 |   |
-| 1/20  | Capture car following obstacle (both moving), then both stop (capture car behind obstacle car)  | 18  |   |
-|  1/21_f | Capture car behind obstacle. Both start to move off together  | 4  |   |
+| 1/15  |  Capture vehicle driving towards obstacle.  Passes it on the right. Obs car facing capture chicle (similar to 1/13??) |  7 |  RTK data not aligned with point cloud (maybe 5 frames ahead?) t=-13  *time offset varies, may be difficult to train with* |
+|  1/17 | Simialr to 1/15 but obstacle car is moving  |  7 |  RTK  ahead of PCL.  t=-12 |
+| 1/18  | Similar to 1/17 but cars moving quicker  |  7 |  RTK  ahead of PCL.  t=-12 |
+|  1/19 | Similar to 1/18. Cars moving quicker again?  |  11 | RTK  ahead of PCL.  t=-12  |
+| 1/20  | Capture car following obstacle (both moving), then both stop (capture car behind obstacle car)  | 18  |  Timestamp offset makes no difference here as both cars are moving!! *May not use for training. Look at modifying x by a percentage in LIDAR frame, only would solve issues when cars are both moving* |
+|  1/21_f | Capture car behind obstacle. Both start to move off together  | 4  |  Timestamp offset makes no difference here as both cars are moving!! *May not use for training. Look at modifying x by a percentage in LIDAR frame, only would solve issues when cars are both moving* |
 | 1/23  | Capture vehicle reverses a few meters then stops.  Obstacle moves across in front like at a junction.  There's an obstacle to the left of the capture vehicle.  | 9  |   |
 | 1/26  |  Capture vehicle stopped.  Obst appears from the right and stops like at a junction.  Capture vehicle moves off, turns left and keeps going |  23 |   |
 |   |   |   |   |
