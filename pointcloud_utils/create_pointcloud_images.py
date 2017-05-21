@@ -17,18 +17,10 @@ import os
 import sys; sys.path = [''] + sys.path  # Consistency for imports between modules and running as a script
 
 # num libs
-import math
-import random
 import numpy as np
 import pandas as pd
 
-SEED = 202
-
-random.seed(SEED)
-np.random.seed(SEED)
-
 import cv2
-#import mayavi.mlab as mlab
 import argparse
 
 from pointcloud_utils.lidar_top import *
@@ -36,10 +28,13 @@ from pointcloud_utils.lidar_surround import *
 from tracklets.parse_tracklet import Tracklet, parse_xml
 
 # TODO - Move these to a utils function later?
-# TODO - Make this into a better coded function??? Perhaps a class?  timestamp.get_nearest() perhaps??
+def makedirs(directory):
+    if not os.path.exists(directory):
+        os.makedirs(directory)
 
 # Get camera timestamp and index closest to the pointcloud timestamp
 #TODO Create a utility function
+#TODO - Make this into a better coded function??? Perhaps a class?  timestamp.get_nearest() perhaps??
 def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp, timestamp_offset):
     camera_index = camera_data.ix[(camera_data.timestamp - pointcloud_timestamp).abs().argsort()[:1]].index[0]
 
@@ -112,13 +107,12 @@ if __name__ == '__main__':
 
     # TODO - Radar
 
-    # TODO - Sort out error if directory exists!! As I'm testing these already exist!!
-    os.makedirs(mark_dir_top) #, exist_ok=True)
-    os.makedirs(mark_dir_surround) #, exist_ok=True)
-    os.makedirs(lidar_top_dir) #, exist_ok=True)
-    os.makedirs(lidar_top_img_dir) #, exist_ok=True)
-    os.makedirs(lidar_surround_dir) #, exist_ok=True)
-    os.makedirs(lidar_surround_img_dir) #, exist_ok=True)
+    makedirs(mark_dir_top) #, exist_ok=True)
+    makedirs(mark_dir_surround) #, exist_ok=True)
+    makedirs(lidar_top_dir) #, exist_ok=True)
+    makedirs(lidar_top_img_dir) #, exist_ok=True)
+    makedirs(lidar_surround_dir) #, exist_ok=True)
+    makedirs(lidar_surround_img_dir) #, exist_ok=True)
 
     camera_data = pd.read_csv(camera_csv)   #['timestamp']
     obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)    # FIXME Single obstacle per tracklet file

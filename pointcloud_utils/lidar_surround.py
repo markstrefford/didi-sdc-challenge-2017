@@ -131,12 +131,13 @@ def track_to_surround_box(obj_size, track):
 
     return surround_boxes
 
-def draw_box3d_on_surround(image, obj_size, track, color=(255,255,255), fill = 2):
+def draw_box3d_on_surround(image, obj_size, track, color=(255,255,255), fill = 1):
     surround_boxes = track_to_surround_box(obj_size, track)
     is_reshape = surround_boxes.shape==(4)
     if is_reshape:
         surround_boxes = surround_boxes.reshape(1,4)
 
+    # TODO: Handle when box splits across left and right of surround view
     # num = len(surround_boxes)
     # for n in range(num):
     b = surround_boxes   #[n]
