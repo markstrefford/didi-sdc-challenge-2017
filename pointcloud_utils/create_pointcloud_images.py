@@ -43,12 +43,15 @@ from tracklets.parse_tracklet import Tracklet, parse_xml
 def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp, timestamp_offset):
     camera_index = camera_data.ix[(camera_data.timestamp - pointcloud_timestamp).abs().argsort()[:1]].index[0]
 
-    proposed_offset = camera_index + timestamp_offset
+    proposed_index = camera_index + timestamp_offset
     if timestamp_offset > 0:
-        actual_index = min(proposed_offset,len(camera_data))
+        actual_index = min(proposed_index,len(camera_data))
     elif timestamp_offset < 0:
-        actual_index = max(proposed_offset, 0)
+        actual_index = max(proposed_index, 0)
+    else:
+        actual_index = proposed_index
 
+    print ('Proposed index: {}, actual index: {}'.format(proposed_index, actual_index))
     #camera_timestamp = camera_data.ix[camera_index].timestamp
     camera_timestamp = camera_data.ix[actual_index].timestamp
     return camera_timestamp, camera_index
