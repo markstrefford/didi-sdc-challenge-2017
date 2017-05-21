@@ -8,12 +8,12 @@
 | 1/6_f | Obstacle in front, drives away after a 1-2 seconds.  Camera car stationary.  | 11 |  Default settings show increasing error as the obstacle drives away |
 | 1/8_f | Camera car driving round in circles. Stationary obstacle and also tree/pole in line of site. Obstacle drives away | 5 | Doesn't work with default settings.  *Suggest ignoring this for training.* |
 | 1/9_f | Camera car driving round in straight line. Pulls up to the left of stationary obstacle   | 5 | Works ok on default settings |
-|  1/10 | Same as 9_f, but starts further away | 9 | Appears to work ok with default settings  |  
-| 1/11  | Same as 10, but obstacle on left of capture vehicle  | 11  |   |
-| 1/13  | Similar to 11, but capture vehicle drives past obstacle. Obj car facing capture vehicle | 11  |   |
-| 1/14_f  | Obstacle on right of capture vehicle, starts close together and capture vehicle drives away  |  5 |   |
-| 1/15  |  Capture vehicle driving towards obstacle.  Passes it on the right. Obs car facing capture chicle (similar to 1/13??) |  7 |   |
-|  1/17 | Simialr to 1/15 but obstacle car is moving  |  7 |   |
+|  1/10 | Same as 9_f, but starts further away | 9 | Appears to work ok with default settings.  After frame 170ish, the car is split across left and right in surround view so that bounding box doesn't render correctly.   |  
+| 1/11  | Same as 10, but obstacle on left of capture vehicle  | 11  |  Works well with default settings |
+| 1/13  | Similar to 11, but capture vehicle drives past obstacle. Obj car facing capture vehicle | 11  | Works well with default settings  |
+| 1/14_f  | Obstacle on right of capture vehicle, starts close together and capture vehicle drives away  |  5 | Mid-frames split car across surround view (see 1/10)  |
+| 1/15  |  Capture vehicle driving towards obstacle.  Passes it on the right. Obs car facing capture chicle (similar to 1/13??) |  7 |  RTK data not aligned with point cloud (maybe 5 frames ahead?) |
+|  1/17 | Simialr to 1/15 but obstacle car is moving  |  7 |  RTK circa 5 frames ahead of PCL |
 | 1/18  | Similar to 1/17 but cars moving quicker  |  7 |   |
 |  1/19 | Similar to 1/18. Cars moving quicker again?  |  11 |   |
 | 1/20  | Capture car following obstacle (both moving), then both stop (capture car behind obstacle car)  | 18  |   |

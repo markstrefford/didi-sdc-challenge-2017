@@ -40,9 +40,17 @@ from tracklets.parse_tracklet import Tracklet, parse_xml
 
 # Get camera timestamp and index closest to the pointcloud timestamp
 #TODO Create a utility function
-def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp):
+def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp, timestamp_offset):
     camera_index = camera_data.ix[(camera_data.timestamp - pointcloud_timestamp).abs().argsort()[:1]].index[0]
-    camera_timestamp = camera_data.ix[camera_index].timestamp
+
+    proposed_offset = camera_index + timestamp_offset
+    if timestamp_offset > 0:
+        actual_index = min(proposed_offset,len(camera_data))
+    elif timestamp_offset < 0:
+        actual_index = max(proposed_offset, 0)
+
+    #camera_timestamp = camera_data.ix[camera_index].timestamp
+    camera_timestamp = camera_data.ix[actual_index].timestamp
     return camera_timestamp, camera_index
 
 # Get info from tracklets
@@ -70,6 +78,8 @@ if __name__ == '__main__':
         help='Output folder')
     parser.add_argument('-i', '--indir', type=str, nargs='?', default='/data',
         help='Input folder where pointclouds are located')
+    parser.add_argument('-t', '--time_offset', type=int, default=0,
+        help='Timestamp offset')
     parser.add_argument('-p', '--pc-only', dest='pc_only', action='store_true', help='Pointclouds only, no images displayed')
     parser.set_defaults(msg_only=False)
     parser.set_defaults(debug=False)
@@ -93,6 +103,8 @@ if __name__ == '__main__':
 
     tracklet_file      = base_dir + 'tracklet_labels.xml'
     camera_csv        = base_dir + 'capture_vehicle_camera.csv'
+
+    timestamp_offset = args.time_offset
 
     # TODO - Radar
 
@@ -127,7 +139,7 @@ if __name__ == '__main__':
 
         # Draw box from tracklet file on the images
         pointcloud_timestamp = int(name)         # Assuming that the name is the timestamp!!
-        camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp)
+        camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp, timestamp_offset)
         print ('Timestamps: pointcloud={}, camera={}, diff={}'.format(pointcloud_timestamp, camera_timestamp, abs(int(pointcloud_timestamp)-int(camera_timestamp))))
         #boxes3d = np.load(boxes3d_file)
 
