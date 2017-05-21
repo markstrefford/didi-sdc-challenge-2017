@@ -55,7 +55,7 @@ def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp, timestamp_
     print ('Actual index: {}'.format(actual_index))
     #camera_timestamp = camera_data.ix[camera_index].timestamp
     camera_timestamp = camera_data.ix[actual_index].timestamp
-    return camera_timestamp, camera_index
+    return camera_timestamp, actual_index
 
 # Get info from tracklets
 def get_obstacle_from_tracklet(tracklet_file):
