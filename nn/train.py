@@ -21,7 +21,7 @@ from data_reader import DataReader
 # TODO: Remove what's not needed here
 #BATCH_SIZE = 32
 BATCH_SIZE = 1
-DATA_DIR = '/vol/didi/dataset2/tracklets/1pc/10pc'
+DATA_DIR = '/vol/didi/dataset2/Tracklets/1/2/'
 LOGDIR = '/vol/training/logs'
 CSV='data.csv'
 CHECKPOINT_EVERY = 100
