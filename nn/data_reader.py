@@ -122,7 +122,7 @@ class DataReader(object):
         return classes
 
     # TODO - These 2 functions are not DRY!!!
-    def load_train_batch(self, batch_size):
+    def load_train_batch(self, batch_size=1):
         x_out = []
         y_out_obj = []
         y_out_box = []
@@ -137,7 +137,8 @@ class DataReader(object):
             y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
             y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.train_batch_pointer += batch_size
-        return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
+        # return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
+        return np.array(x_out), np.array(y_out_obj)
 
     # TODO - These 2 functions are not DRY!!!
     def load_val_batch(self, batch_size):

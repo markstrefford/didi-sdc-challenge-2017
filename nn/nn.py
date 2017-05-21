@@ -87,27 +87,31 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
 
     # Bounding box prediction
     # Objectness (is this the center of an object or not
-    up4box = UpSampling2D(size=(2, 2))(conv3)
-    conv4box = Conv2D(64, (2, 2), activation='relu', padding='same')(up4box)
-    conv4box = Dropout(0.2)(conv4box)
-    merge4box = add([conv2, conv4box])
-
-    up5box = UpSampling2D(size=(2,2))(merge4box)
-    conv5box = Conv2D(32, (2, 2), activation='relu', padding='same')(up5box)
-    conv5box = Dropout(0.2)(conv5box)
-    merge5box = add([conv1, conv5box])
+    # up4box = UpSampling2D(size=(2, 2))(conv3)
+    # conv4box = Conv2D(64, (2, 2), activation='relu', padding='same')(up4box)
+    # conv4box = Dropout(0.2)(conv4box)
+    # merge4box = add([conv2, conv4box])
+    #
+    # up5box = UpSampling2D(size=(2,2))(merge4box)
+    # conv5box = Conv2D(32, (2, 2), activation='relu', padding='same')(up5box)
+    # conv5box = Dropout(0.2)(conv5box)
+    # merge5box = add([conv1, conv5box])
 
     #FIXME: This is a regressor??? so what does/should it return...??
-    prediction_box = Conv2D(2, (2, 2), activation='relu', padding='same')(merge5box)
+    # prediction_box = Conv2D(2, (2, 2), activation='relu', padding='same')(merge5box)
 
     # Setup loss, etc. and
-    model = Model(inputs=[inputs], outputs=[prediction_obj, prediction_box])
+    # model = Model(inputs=[inputs], outputs=[prediction_obj, prediction_box])
+    model = Model(inputs=[inputs], outputs=[prediction_obj])
     sgd = SGD(lr=0.01, decay=1e-6, momentum=0.3, nesterov=False)
 
     #FIXME: Initial attempt at loss and metrics...
+    # model.compile(optimizer=sgd,
+    #               loss=['categorical_crossentropy', 'mean_squared_error'],
+    #               metrics=['accuracy', 'mean_squared_error'])
     model.compile(optimizer=sgd,
-                  loss=['categorical_crossentropy', 'mean_squared_error'],
-                  metrics=['accuracy', 'mean_squared_error'])
+                  loss=['categorical_crossentropy'],
+                  metrics=['accuracy'])
 
     if weights_path != None:
         print ('Loading weights from {}'.format(weights_path))
