@@ -40,6 +40,8 @@ def get_arguments():
                         action='store', dest='data_dir', help='The directory containing the testing data.')
     parser.add_argument('--predict_dir', '--predict', type=str, default=PREDICT_OUTPUT,
                         action='store', dest='predict_dir', help='The directory to write predicted images to.')
+    parser.add_argument('--batch_size', type=int, default=BATCH_SIZE,
+                        action='store', dest='batch_size', help='Number of [pointcloud] samples in batch.')
     # parser.add_argument('--data_csv', '--csv', type=str, default=CSV,
     #                     action='store', dest='csv', help='The csv containing the training data.')
     return parser.parse_args()
@@ -57,12 +59,14 @@ def main():
     pcl_data = pd.read_csv(PCL_CSV)   # TODO: Needed?
 
     LossHistory, model = nn.top_nn(weights_path=WEIGHTS_PATH)
+    summary = model.summary()
+    print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 
     print('test.py: args.data_dir={}'.format(args.data_dir))
     data_reader = DataReader(args.data_dir)
 
-    xs, ys = data_reader.load_val_batch(batch_size=BATCH_SIZE)
-    predictions = model.predict(xs, batch_size=BATCH_SIZE)  # TODO - Move into the loop like training code
+    xs, ys = data_reader.load_val_batch(batch_size=args.batch_size)
+    predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
 
     # TODO - Predict these in next iteration of code
     length = 4.241800
@@ -82,9 +86,11 @@ def main():
         # collection.tracklets.append(obs_tracklet)
 
         # Load relevant pcl image
+        pcl_timestamp = pcl_data.ix[t].timestamp
+        pcl_image = cv2.imload(os.path.join(PCL_IMAGE_PATH,str(pcl_timestamp)+'.png'))
         img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud
-        img[:,:,0] = xs[t]
-        img[:,:,1] = xs[t]
+        img[:,:,0] = pcl_image
+        img[:,:,1] = pcl_image
         #img[:,:,2] = xs[t]
 
         # Merge with the prediction
