@@ -4,7 +4,7 @@
 |---|---|---|---|
 | 1/2 | Stationary obstacle in front | 66 | |
 | 1/3 | Stationary obstacle in front | 66 | |
-| 1/4_f | Stationary obstacle in front, then drives away.  Camera car stationary. Pointcloud and obstacle rtk/gps don't reflect the obstacle driving away. | 24 | Appears to work ok with default settings |
+| 1/4_f | Stationary obstacle in front, then drives away.  Camera car stationary.  | 24 | Appears to work ok with default settings |
 | 1/6_f | Obstacle in front, drives away after a 1-2 seconds.  Camera car stationary.  | 11 |  Default settings show increasing error as the obstacle drives away |
 | 1/8_f | Camera car driving round in circles. Stationary obstacle and also tree/pole in line of site. Obstacle drives away | 5 | Doesn't work with default settings.  *Suggest ignoring this for training.* |
 | 1/9_f | Camera car driving round in straight line. Pulls up to the left of stationary obstacle   | 5 | Works ok on default settings |
@@ -22,7 +22,7 @@
 | 1/26 / 1/26_2  |  Capture vehicle stopped.  Obst appears from the right and stops like at a junction.  Capture vehicle moves off, turns left and keeps going |  23 | t=-30 will work up to circa camera frame 190 and then it goes off track as the capture vehicle moves while the obstacle stays still.  With t=0, works ok mostly in top view from frame 190, but issues in surround view (it's not tracking the car correctly)  |
 |   |   |   |   |
 | 2/1  |  Capture vehicle parked behind obstacle, not quite in line.  Obstacles to the right (trees?) | 66  |   |
-| 2/2  | Short version of 2/1 ?  |  17 |   |
+| 2/2  | Short version of 2/1 ?  |  17 | Works with defaults  |
 | 2/3_f  | Same position as above.  Obst vehicle drives off (then stops in the distance?)  | 21  |   |
 | 2/6_f  | Same starting position as above.  Capture vehicle turns left until obst vehicle comes into view  | 6  |   |
 | 2/8_f  | Capture vehicle on right of obst.  Drives past it, other trees, etc around.  Banking on the right  | 4  |   |
