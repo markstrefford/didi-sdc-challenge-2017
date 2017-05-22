@@ -23,7 +23,7 @@ from tracklets.parse_tracklet import Tracklet, parse_xml
 from tracklets.generate_tracklet import *
 
 # TODO: Remove what's not needed here
-BATCH_SIZE = 32
+BATCH_SIZE = 8
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/'
 WEIGHTS_PATH='/vol/training/logs/model-final-step-99-val-0.993674.ckpt'
 
@@ -67,6 +67,8 @@ def main():
 
     xs, ys = data_reader.load_val_batch(batch_size=args.batch_size)
     predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
+    predict_output_file = os.path.join(PREDICT_OUTPUT, 'predictions.npy')
+    np.save(predict_output_file, predictions)
 
     # TODO - Predict these in next iteration of code
     length = 4.241800
