@@ -26,6 +26,7 @@ BATCH_SIZE = 32
 DATA_DIR = '/vol/didi/dataset2/tracklets/1pc/10pc'
 CKPT_FILE = 'model.ckpt'
 WEIGHTS_PATH='/vol/training/logs/'
+PREDICT_OUTPUT='/vol/didi/dataset2/predict/'
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Udacity Challenge Testing Script')
@@ -33,6 +34,8 @@ def get_arguments():
                         action='store', dest='weights_path', help='Path to a trained model')
     parser.add_argument('--data_dir', '--data', type=str, default=DATA_DIR,
                         action='store', dest='data_dir', help='The directory containing the testing data.')
+    parser.add_argument('--predict_dir', '--predict', type=str, default=PREDICT_OUTPUT,
+                        action='store', dest='predict_dir', help='The directory to write predicted images to.')
     # parser.add_argument('--data_csv', '--csv', type=str, default=CSV,
     #                     action='store', dest='csv', help='The csv containing the training data.')
     return parser.parse_args()
@@ -81,8 +84,10 @@ def main():
         img[:,:,2] = predictions[t]
 
         # Render the combined image
-        cv2.imshow('predict[0]', img)
-        cv2.waitKey(1)
+        #cv2.imshow('predict[0]', img)
+        #cv2.waitKey(1)
+        predict_image_file = os.path.join(PREDICT_OUTPUT, str(t) + '.jpg')
+        cv2.imwrite(predict_image_file, img)
         t += 1
 
     ## save
