@@ -82,7 +82,7 @@ def main():
         # collection.tracklets.append(obs_tracklet)
 
         # Load relevant pcl image
-        img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud 
+        img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud
         img[:,:,0] = xs[t]
         img[:,:,1] = xs[t]
         #img[:,:,2] = xs[t]
