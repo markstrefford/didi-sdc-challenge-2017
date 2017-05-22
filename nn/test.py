@@ -87,7 +87,9 @@ def main():
 
         # Load relevant pcl image
         pcl_timestamp = pcl_data.ix[t].timestamp
-        pcl_image = cv2.imload(os.path.join(PCL_IMAGE_PATH,str(pcl_timestamp)+'.png'))
+        pcl_image_file = os.path.join(PCL_IMAGE_PATH,str(pcl_timestamp)+'.png')
+        print ('Rendering prediction on image {}'.pcl_image_file)
+        pcl_image = cv2.imread(pcl_image)
         img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud
         img[:,:,0] = pcl_image
         img[:,:,1] = pcl_image
