@@ -27,7 +27,7 @@ BATCH_SIZE = 1
 #DATA_DIR = '/vol/didi/dataset2/Tracklets/1/2/'
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/'
 LOGDIR = '/vol/training/logs'
-TRAIN_DIR = '/vol/didi/dataset2/Didi-Release-2/Train/'
+TRAIN_DIR = '/vol/dataset2/Didi-Release-2/Train/'
 CSV='data.csv'
 CHECKPOINT_EVERY = 100
 NUM_STEPS = int(1e2)   # Run for 100 steps
@@ -90,7 +90,7 @@ def main():
         xs, ys = data_reader.load_train_batch(batch_size=args.batch_size)
 
         save_train_batch(i,xs, ys)
-        train_error = model.train_on_batch(xs, ys, callbacks = [early_stop, checkpoint, tensorboard])
+        train_error = model.train_on_batch(xs, ys) #, callbacks = [early_stop, checkpoint, tensorboard])
         print ('{}/{}: Training loss: {}'.format(i, start_step + args.num_steps, train_error))
 
         if i % 10 == 0:
