@@ -23,7 +23,7 @@ from keras.layers import Input, Dense, Flatten, \
                          Reshape, core, Dropout
 from keras.layers.merge import add, concatenate
 from keras.optimizers import Adam, SGD
-from keras.callbacks import Callback
+from keras.callbacks import Callback, TensorBoard, EarlyStopping, ModelCheckpoint
 import keras.backend as K
 
 #TODO - Just a starter!!!
@@ -37,7 +37,6 @@ activation = "relu"
 surround_x, surround_y, surround_z = 400, 8, 3 # TODO - Confirm surround_z, if z=1 then remove completely from the code!!
 top_x, top_y, top_z = 400, 400, 8
 camera_x, camera_y, camera_z = 1400, 800, 3    #TODO - Get correct values here!!
-
 
 #TODO: Flesh this out as this is the measure from Udacity
 def IoU(pred_y, act_y):

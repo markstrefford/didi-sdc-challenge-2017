@@ -96,7 +96,7 @@ def main():
         img = pcl_image
 
         # Merge with the prediction
-        img[:,:,2] = predictions[t,:,:,0]
+        img[:,:,2] = predictions[t,:,:,0]*255
 
         # Render the combined image
         #cv2.imshow('predict[0]', img)
@@ -104,9 +104,9 @@ def main():
         pcl_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_pcl.jpg')
         cv2.imwrite(pcl_image_file, img)
         predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p0.jpg')
-        cv2.imwrite(predict_image_file, predictions[t,:,:,0])
+        cv2.imwrite(predict_image_file, predictions[t,:,:,0]*255)
         predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p1.jpg')
-        cv2.imwrite(predict_image_file, predictions[t,:,:,1])
+        cv2.imwrite(predict_image_file, predictions[t,:,:,1]*255)
         t += 1
 
     ## save

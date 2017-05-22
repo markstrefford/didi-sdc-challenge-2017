@@ -16,7 +16,10 @@ Example:
 import os
 import nn
 import argparse
+import numpy as np
 from data_reader import DataReader
+#TODO: Put these into nn.py
+from keras.callbacks import Callback, TensorBoard, EarlyStopping, ModelCheckpoint
 
 # TODO: Remove what's not needed here
 #BATCH_SIZE = 32
@@ -24,6 +27,7 @@ BATCH_SIZE = 1
 #DATA_DIR = '/vol/didi/dataset2/Tracklets/1/2/'
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/'
 LOGDIR = '/vol/training/logs'
+TRAIN_DIR = '/vol/didi/dataset2/Train/'
 CSV='data.csv'
 CHECKPOINT_EVERY = 100
 NUM_STEPS = int(1e2)   # Run for 100 steps
@@ -59,6 +63,12 @@ def get_arguments():
                         default=L2_REG)
     return parser.parse_args()
 
+def save_train_batch(i, xs, ys):
+    xs_filename = os.path.join(TRAIN_DIR, str(i) + '_xs.npy')
+    ys_filename = os.path.join(TRAIN_DIR, str(i) + '_ys.npy')
+    np.save(xs_filename, xs)
+    np.save(ys_filename, ys)
+
 def main():
     args=get_arguments()
 
@@ -67,12 +77,20 @@ def main():
     summary = model.summary()
     print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 
+    #TODO: Put these into nn.py and parameterise
+    early_stop = EarlyStopping(monitor='val_loss', min_delta=0.001, patience=10, mode='min', verbose=1)
+    checkpoint = ModelCheckpoint('weights.hdf5', monitor='val_loss', verbose=1, save_best_only=True, mode='min',
+                                 period=1)
+    tensorboard = TensorBoard(log_dir='../logs/', histogram_freq=0, write_graph=True, write_images=False)
+
     data_reader = DataReader(args.data_dir)
 
     #FIXME: Based on number of steps, convert to number of epochs
     for i in range(start_step, start_step + args.num_steps):
         xs, ys = data_reader.load_train_batch(batch_size=args.batch_size)
-        train_error = model.train_on_batch(xs, ys)
+
+        save_train_batch(i,xs, ys)
+        train_error = model.train_on_batch(xs, ys, callbacks = [early_stop, checkpoint, tensorboard])
         print ('{}/{}: Training loss: {}'.format(i, start_step + args.num_steps, train_error))
 
         if i % 10 == 0:
