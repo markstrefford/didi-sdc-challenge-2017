@@ -16,6 +16,7 @@ import os
 import nn
 import cv2
 import numpy as np
+import pandas as pd
 import argparse
 from data_reader import DataReader
 from tracklets.parse_tracklet import Tracklet, parse_xml
@@ -25,6 +26,10 @@ from tracklets.generate_tracklet import *
 BATCH_SIZE = 32
 DATA_DIR = '/vol/didi/dataset2/tracklets/1pc/10pc'
 WEIGHTS_PATH='/vol/training/logs/model-final-step-999-val-0.025713.ckpt'
+
+# TODO: Only added in for initial code testing... remove asap!!
+PCL_IMAGE_PATH='/vol/dataset2/Didi-Release-2/Tracklets/1/2/processed/lidar_top_img/'
+PCL_CSV='/vol/didi/dataset2/Tracklets/1/2/capture_vehicle_pointcloud.csv'
 PREDICT_OUTPUT='/vol/dataset2/Didi-Release-2/Predict/'
 
 def get_arguments():
@@ -44,9 +49,12 @@ def main():
     tracklet_file = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/predicted_tracklets.xml'
 
     start_step = 0
-    LossHistory, model = nn.top_nn(weights_path=args.restore_from)
+    LossHistory, model = nn.top_nn(weights_path=args.weights_path)
     #summary = model.summary()
     #print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
+
+
+    pcl_data = pd.read_csv(PCL_CSV)   # TODO: Needed?
 
     LossHistory, model = nn.top_nn(weights_path=WEIGHTS_PATH)
 
@@ -74,7 +82,7 @@ def main():
         # collection.tracklets.append(obs_tracklet)
 
         # Load relevant pcl image
-        img = np.zeros((400, 400, 3))
+        img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud 
         img[:,:,0] = xs[t]
         img[:,:,1] = xs[t]
         #img[:,:,2] = xs[t]
