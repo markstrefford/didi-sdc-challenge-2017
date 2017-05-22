@@ -90,12 +90,14 @@ def main():
         xs, ys = data_reader.load_train_batch(batch_size=args.batch_size)
 
         save_train_batch(i,xs, ys)
-        train_error = model.train_on_batch(xs, ys) #, callbacks = [early_stop, checkpoint, tensorboard])
+        #train_error = model.train_on_batch(xs, ys) #, callbacks = [early_stop, checkpoint, tensorboard])
+        train_error = model.train_on_batch(xs, ys[:,:,:,0], callbacks = [early_stop, checkpoint, tensorboard])
         print ('{}/{}: Training loss: {}'.format(i, start_step + args.num_steps, train_error))
 
         if i % 10 == 0:
             xs, ys = data_reader.load_val_batch(batch_size=args.batch_size)
-            val_error = model.test_on_batch(xs, ys)
+            #val_error = model.test_on_batch(xs, ys)
+            val_error = model.test_on_batch(xs, ys[:,:,:,0])
             print ('{}/{}: Validation loss: {}'.format(i, start_step + args.num_steps, val_error))
 
             if i > 0 and i % args.checkpoint_every == 0:

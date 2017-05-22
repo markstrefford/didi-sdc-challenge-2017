@@ -135,14 +135,13 @@ def dice_coef(y_true, y_pred):
 def dice_coef_loss(y_true, y_pred):
     return -dice_coef(y_true, y_pred)
 
-def top_nn():
+def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     class LossHistory(Callback):
         def on_train_begin(self, logs={}):
             self.losses = []
 
         def on_batch_end(self, batch, logs={}):
             self.losses.append(logs.get('loss'))
-
 
     inputs = Input((top_x, top_y, top_z))
     conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(inputs)
@@ -186,5 +185,10 @@ def top_nn():
     model = Model(inputs=[inputs], outputs=[conv10])
 
     model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
+
+    if weights_path != None:
+        print ('Loading weights from {}'.format(weights_path))
+        model.load_weights(weights_path)
+        print ('Loaded!')
 
     return LossHistory, model
