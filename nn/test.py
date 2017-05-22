@@ -24,9 +24,8 @@ from tracklets.generate_tracklet import *
 # TODO: Remove what's not needed here
 BATCH_SIZE = 32
 DATA_DIR = '/vol/didi/dataset2/tracklets/1pc/10pc'
-CKPT_FILE = 'model.ckpt'
-WEIGHTS_PATH='/vol/training/logs/'
-PREDICT_OUTPUT='/vol/didi/dataset2/predict/'
+WEIGHTS_PATH='/vol/training/logs/model-final-step-999-val-0.025713.ckpt'
+PREDICT_OUTPUT='/vol/dataset2/Didi-Release-2/Predict/'
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Udacity Challenge Testing Script')
