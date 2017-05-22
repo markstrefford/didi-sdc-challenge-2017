@@ -91,12 +91,10 @@ def main():
         print ('Rendering prediction on image {}'.format(pcl_image_file))
         pcl_image = cv2.imread(pcl_image_file)
         img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud
-        img[:,:,0] = pcl_image[0]
-        img[:,:,1] = pcl_image[1]
-        #img[:,:,2] = xs[t]
+        img = pcl_image
 
         # Merge with the prediction
-        img[:,:,2] = predictions[t]
+        img[:,:,2] = predictions[t,:,:,0]
 
         # Render the combined image
         #cv2.imshow('predict[0]', img)
