@@ -24,12 +24,12 @@ from tracklets.generate_tracklet import *
 
 # TODO: Remove what's not needed here
 BATCH_SIZE = 32
-DATA_DIR = '/vol/didi/dataset2/tracklets/1pc/10pc'
+DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/'
 WEIGHTS_PATH='/vol/training/logs/model-final-step-99-val-0.993674.ckpt'
 
 # TODO: Only added in for initial code testing... remove asap!!
 PCL_IMAGE_PATH='/vol/dataset2/Didi-Release-2/Tracklets/1/2/processed/lidar_top_img/'
-PCL_CSV='/vol/didi/dataset2/Tracklets/1/2/capture_vehicle_pointcloud.csv'
+PCL_CSV='/vol/dataset2/Didi-Release-2/Tracklets/1/2/capture_vehicle_pointcloud.csv'
 PREDICT_OUTPUT='/vol/dataset2/Didi-Release-2/Predict/'
 
 def get_arguments():
@@ -61,7 +61,7 @@ def main():
     print('test.py: args.data_dir={}'.format(args.data_dir))
     data_reader = DataReader(args.data_dir)
 
-    xs, ys = data_reader.load_val_batch(batch_size=args.batch_size)
+    xs, ys = data_reader.load_val_batch(batch_size=BATCH_SIZE)
     predictions = model.predict(xs, batch_size=BATCH_SIZE)  # TODO - Move into the loop like training code
 
     # TODO - Predict these in next iteration of code
