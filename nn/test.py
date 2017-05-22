@@ -25,7 +25,7 @@ from tracklets.generate_tracklet import *
 # TODO: Remove what's not needed here
 BATCH_SIZE = 32
 DATA_DIR = '/vol/didi/dataset2/tracklets/1pc/10pc'
-WEIGHTS_PATH='/vol/training/logs/model-final-step-999-val-0.025713.ckpt'
+WEIGHTS_PATH='/vol/training/logs/model-final-step-99-val-0.993674.ckpt'
 
 # TODO: Only added in for initial code testing... remove asap!!
 PCL_IMAGE_PATH='/vol/dataset2/Didi-Release-2/Tracklets/1/2/processed/lidar_top_img/'
@@ -49,7 +49,7 @@ def main():
     tracklet_file = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/predicted_tracklets.xml'
 
     start_step = 0
-    LossHistory, model = nn.top_nn(weights_path=args.weights_path)
+    #LossHistory, model = nn.top_nn(weights_path=args.weights_path)
     #summary = model.summary()
     #print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 

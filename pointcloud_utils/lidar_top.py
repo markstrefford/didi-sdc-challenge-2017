@@ -230,6 +230,6 @@ def draw_track_on_top(image, obj_size, track, color=(255,255,255), fill = 2):
     x2 = b[2]
     y2 = b[3]
     cv2.rectangle(image, (x1,y1), (x2,y2),color, fill, cv2.LINE_AA)
-    print ('draw_track_on_top(): Track={}, Box=[{},{}]/[{},{}]'.format(track, x1,y1, x2, y2))
+    #print ('draw_track_on_top(): Track={}, Box=[{},{}]/[{},{}]'.format(track, x1,y1, x2, y2))
     return image
 
