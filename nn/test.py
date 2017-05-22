@@ -99,8 +99,12 @@ def main():
         # Render the combined image
         #cv2.imshow('predict[0]', img)
         #cv2.waitKey(1)
-        predict_image_file = os.path.join(PREDICT_OUTPUT, str(t) + '.jpg')
-        cv2.imwrite(predict_image_file, img)
+        pcl_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_pcl.jpg')
+        cv2.imwrite(pcl_image_file, img)
+        predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p0.jpg')
+        cv2.imwrite(predict_image_file, predictions[t,:,:,0])
+        predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p1.jpg')
+        cv2.imwrite(predict_image_file, predictions[t,:,:,1])
         t += 1
 
     ## save
