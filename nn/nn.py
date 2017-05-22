@@ -18,7 +18,7 @@ Note we'll overfit on a single dataset (say 15.bag) to start with to assure ther
 
 import tensorflow as tf
 from keras.models import Model, Sequential
-from keras.layers import Input, Dense, Flatten, \
+from keras.layers import Input, Dense, Flatten, Conv2DTranspose, \
                          Activation, Conv2D, MaxPooling2D, UpSampling2D, \
                          Reshape, core, Dropout
 from keras.layers.merge import add, concatenate
@@ -32,6 +32,7 @@ filter_length = 2
 num_pooling = 2
 border_mode = "valid"
 activation = "relu"
+smooth = 1.
 
 # Input shapes (note surround and top and the .npy files)
 surround_x, surround_y, surround_z = 400, 8, 3 # TODO - Confirm surround_z, if z=1 then remove completely from the code!!
@@ -45,7 +46,7 @@ def IoU(pred_y, act_y):
 
 # TODO: Be DRY here... lots of code repetition... can this be a single function with different parameters calling it??
 # TODO: Add in regularisers are they aren't used in this code yet!
-def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
+def top_nn_orig(weights_path=None, b_regularizer = None, w_regularizer=None):
     class LossHistory(Callback):
         def on_train_begin(self, logs={}):
             self.losses = []
@@ -123,3 +124,66 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
 def camera_nn(model, num_classes, weights_path=None, w_regularizer = None, b_regularizer = None):
     return model
 
+# from https://github.com/jocicmarko/ultrasound-nerve-segmentation/blob/master/train.py
+def dice_coef(y_true, y_pred):
+    y_true_f = K.flatten(y_true)
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    return (2. * intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
+
+
+def dice_coef_loss(y_true, y_pred):
+    return -dice_coef(y_true, y_pred)
+
+def top_nn():
+    class LossHistory(Callback):
+        def on_train_begin(self, logs={}):
+            self.losses = []
+
+        def on_batch_end(self, batch, logs={}):
+            self.losses.append(logs.get('loss'))
+
+
+    inputs = Input((top_x, top_y, top_z))
+    conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(inputs)
+    conv1 = Conv2D(32, (3, 3), activation='relu', padding='same')(conv1)
+    pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
+
+    conv2 = Conv2D(64, (3, 3), activation='relu', padding='same')(pool1)
+    conv2 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv2)
+    pool2 = MaxPooling2D(pool_size=(2, 2))(conv2)
+
+    conv3 = Conv2D(128, (3, 3), activation='relu', padding='same')(pool2)
+    conv3 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv3)
+    pool3 = MaxPooling2D(pool_size=(2, 2))(conv3)
+
+    conv4 = Conv2D(256, (3, 3), activation='relu', padding='same')(pool3)
+    conv4 = Conv2D(256, (3, 3), activation='relu', padding='same')(conv4)
+    pool4 = MaxPooling2D(pool_size=(2, 2))(conv4)
+
+    conv5 = Conv2D(512, (3, 3), activation='relu', padding='same')(pool4)
+    conv5 = Conv2D(512, (3, 3), activation='relu', padding='same')(conv5)
+
+    up6 = concatenate([Conv2DTranspose(256, (2, 2), strides=(2, 2), padding='same')(conv5), conv4], axis=3)
+    conv6 = Conv2D(256, (3, 3), activation='relu', padding='same')(up6)
+    conv6 = Conv2D(256, (3, 3), activation='relu', padding='same')(conv6)
+
+    up7 = concatenate([Conv2DTranspose(128, (2, 2), strides=(2, 2), padding='same')(conv6), conv3], axis=3)
+    conv7 = Conv2D(128, (3, 3), activation='relu', padding='same')(up7)
+    conv7 = Conv2D(128, (3, 3), activation='relu', padding='same')(conv7)
+
+    up8 = concatenate([Conv2DTranspose(64, (2, 2), strides=(2, 2), padding='same')(conv7), conv2], axis=3)
+    conv8 = Conv2D(64, (3, 3), activation='relu', padding='same')(up8)
+    conv8 = Conv2D(64, (3, 3), activation='relu', padding='same')(conv8)
+
+    up9 = concatenate([Conv2DTranspose(32, (2, 2), strides=(2, 2), padding='same')(conv8), conv1], axis=3)
+    conv9 = Conv2D(32, (3, 3), activation='relu', padding='same')(up9)
+    conv9 = Conv2D(32, (3, 3), activation='relu', padding='same')(conv9)
+
+    conv10 = Conv2D(1, (1, 1), activation='sigmoid')(conv9)
+
+    model = Model(inputs=[inputs], outputs=[conv10])
+
+    model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
+
+    return model
