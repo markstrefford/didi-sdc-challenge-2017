@@ -16,19 +16,22 @@ import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
 from tracklets.parse_tracklet import Tracklet, parse_xml
 from pointcloud_utils.lidar_top import draw_track_on_top
+from pointcloud_utils.timestamps_utils import get_camera_timestamp_and_index
 
 import numpy as np
 import pandas as pd
 import glob
 
 top_x, top_y, top_z = 400, 400, 8
+DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'
+BAG_CSV = '../data/training_data.csv'
 
 # Get camera timestamp and index closest to the pointcloud timestamp
 #TODO Create a utility function
-def get_nearest_timestamp_and_index(data, timestamp):
-    index = data.ix[(data.timestamp - timestamp).abs().argsort()[:1]].index[0]
-    data_timestamp = data.ix[index].timestamp
-    return data_timestamp, index
+# def get_nearest_timestamp_and_index(data, timestamp):
+#     index = data.ix[(data.timestamp - timestamp).abs().argsort()[:1]].index[0]
+#     data_timestamp = data.ix[index].timestamp
+#     return data_timestamp, index
 
 # Get info from tracklets
 #TODO Create a utility function
@@ -49,9 +52,10 @@ def get_obstacle_from_tracklet(tracklet_file):
 # TODO: Make this work with multiple bags
 # TODO: Make this work with multiple trackable objects
 class DataReader(object):
-    def __init__(self, base_dir):
-        self.training_dir = base_dir
-        self.lidar_top_dir = os.path.join(self.training_dir, 'processed/lidar_top')
+    def __init__(self, base_dir, bag_dataframe):
+        self.bag_dataframe = bag_dataframe
+        #self.training_dir = base_dir
+        #self.lidar_top_dir = os.path.join(self.training_dir, 'processed/lidar_top')
         self.load()
 
     def load(self):
@@ -62,48 +66,72 @@ class DataReader(object):
         self.val_batch_pointer = 0
         total = 0
 
-        #image_dir = os.path.join(self.training_dir, 'camera')
-        camera_csv = os.path.join(self.training_dir, 'capture_vehicle_camera.csv')   # We're driven by camera messages
-        pointcloud_csv = os.path.join(self.training_dir, 'capture_vehicle_pointcloud.csv')
-        object_csv = os.path.join(self.training_dir, 'objects_obs1_rear_rtk_interpolated.csv')
-        tracklet_file = os.path.join(self.training_dir, 'tracklet_labels.xml')
+        for idx, bag_info in self.bag_dataframe.iterrows():
+            training_dir = bag_info.bag_directory
+            print ('Processing training data: {}'.format(training_dir))
 
-        camera_data = pd.read_csv(camera_csv)  # ['timestamp']
-        obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
-        #print ('Loaded tracklets {}'.format(tracks))
+            #image_dir = os.path.join(self.training_dir, 'camera')
+            camera_csv = os.path.join(training_dir, 'capture_vehicle_camera.csv')   # We're driven by camera messages
+            pointcloud_csv = os.path.join(training_dir, 'capture_vehicle_pointcloud.csv')
+            object_csv = os.path.join(training_dir, 'objects_obs1_rear_rtk_interpolated.csv')
+            tracklet_file = os.path.join(training_dir, 'tracklet_labels.xml')
 
-        lidar_files = sorted(glob.glob(os.path.join(self.lidar_top_dir, '*.npy')))
-        for file in lidar_files:
-            lidar_file = os.path.join(self.lidar_top_dir, file)
+            camera_data = pd.read_csv(camera_csv)  # ['timestamp']
+            obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
+            #print ('Loaded tracklets {}'.format(tracks))
 
-            #lidar = np.load(lidar_file)
-            xs.append(lidar_file)
-            timestamp = int(os.path.basename(file).replace('.npy', ''))
-            camera_timestamp, index = get_nearest_timestamp_and_index(camera_data, timestamp)
-            # t = tracks[index]['translation']
-            # r = tracks[index]['rotation']
-            # FIXME: Size is the same for all tracks...?
-            y = np.array([obj_size, tracks[index]])
-            ys.append(y)
+            lidar_files = sorted(glob.glob(os.path.join(self.lidar_top_dir, '*.npy')))
 
-            total +=1
+            frame = 0
+            for file in lidar_files:
+                if (frame >= bag_info.start_frame) and ( frame <= bag_info.end_frame or bag_info.end_frame == -1):
+                    lidar_file = os.path.join(self.lidar_top_dir, file)
+
+                    #lidar = np.load(lidar_file)
+                    xs.append(lidar_file)
+                    pointcloud_timestamp = int(os.path.basename(file).replace('.npy', ''))
+                    #camera_timestamp, index = get_nearest_timestamp_and_index(camera_data, timestamp)
+                    camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp,
+                                                                             bag_info.time_offset)
+
+                    # t = tracks[index]['translation']
+                    # r = tracks[index]['rotation']
+                    # FIXME: Size is the same for all tracks...?
+                    y = np.array([obj_size, tracks[index]])
+                    ys.append(y)
+
+                frame +=1
+                total +=1
 
         self.num_samples = len(xs)
+        print('Found {} training samples'.format(self.num_samples))
 
-        # self.train_xs = xs[:int(len(xs) * 0.8)]
-        # self.train_ys = ys[:int(len(xs) * 0.8)]
-        #
-        # self.val_xs = xs[-int(len(xs) * 0.2):]
-        # self.val_ys = ys[-int(len(xs) * 0.2):]
-
+        # TODO: Split train and validation
         self.train_xs = xs  #[:int(len(xs) * 0.8)]
         self.train_ys = ys  #[:int(len(xs) * 0.8)]
-
         self.val_xs = xs    #[-int(len(xs) * 0.2):]
         self.val_ys = ys    #[-int(len(xs) * 0.2):]
 
         self.num_train_samples = len(self.train_xs)
         self.num_val_samples = len(self.val_xs)
+
+
+
+    # Get a list of all the bags we want to use
+    # Note we are using a pre-generated CSV to circumvent some of the data issues in Udacity dataset2
+    def get_bag_list(self):
+        bag_dataframe = pd.read_csv(BAG_CSV)
+        bag_dataframe['start_frame'].fillna(0, inplace=True)
+        bag_dataframe['end_frame'].fillna(-1, inplace=True)
+
+        training_bag_files = []
+        for idx, training_row in bag_dataframe.iterrows():
+            bag = os.path.join(DATA_DIR, 'Tracklets', str(training_row.directory), str(training_row.bag))
+            training_bag_files.append(bag)
+
+        bag_dataframe['bag_directory'] = training_bag_files
+        return bag_dataframe
+
 
     def _predict_obj_y(self, obj_size, track):
         obj_y = np.zeros((top_x, top_y))

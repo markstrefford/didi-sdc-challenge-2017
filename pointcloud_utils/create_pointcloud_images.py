@@ -26,6 +26,7 @@ import argparse
 from pointcloud_utils.lidar_top import *
 from pointcloud_utils.lidar_surround import *
 from tracklets.parse_tracklet import Tracklet, parse_xml
+from timestamp_utils import get_camera_timestamp_and_index
 
 # TODO - Move these to a utils function later?
 def makedirs(directory):
@@ -35,22 +36,22 @@ def makedirs(directory):
 # Get camera timestamp and index closest to the pointcloud timestamp
 #TODO Create a utility function
 #TODO - Make this into a better coded function??? Perhaps a class?  timestamp.get_nearest() perhaps??
-def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp, timestamp_offset):
-    camera_index = camera_data.ix[(camera_data.timestamp - pointcloud_timestamp).abs().argsort()[:1]].index[0]
-
-    proposed_index = camera_index + timestamp_offset
-    print ('Proposed index: {} = camera_index: {} + timestamp_offset: {}'.format(proposed_index, camera_index, timestamp_offset))
-    if timestamp_offset > 0:
-        actual_index = min(proposed_index,len(camera_data))
-    elif timestamp_offset < 0:
-        actual_index = max(proposed_index, 0)
-    else:
-        actual_index = proposed_index
-
-    print ('Actual index: {}'.format(actual_index))
-    #camera_timestamp = camera_data.ix[camera_index].timestamp
-    camera_timestamp = camera_data.ix[actual_index].timestamp
-    return camera_timestamp, actual_index
+# def get_camera_timestamp_and_index(camera_data, pointcloud_timestamp, timestamp_offset):
+#     camera_index = camera_data.ix[(camera_data.timestamp - pointcloud_timestamp).abs().argsort()[:1]].index[0]
+#
+#     proposed_index = camera_index + timestamp_offset
+#     #print ('Proposed index: {} = camera_index: {} + timestamp_offset: {}'.format(proposed_index, camera_index, timestamp_offset))
+#     if timestamp_offset > 0:
+#         actual_index = min(proposed_index,len(camera_data))
+#     elif timestamp_offset < 0:
+#         actual_index = max(proposed_index, 0)
+#     else:
+#         actual_index = proposed_index
+#
+#     #print ('Actual index: {}'.format(actual_index))
+#     #camera_timestamp = camera_data.ix[camera_index].timestamp
+#     camera_timestamp = camera_data.ix[actual_index].timestamp
+#     return camera_timestamp, actual_index
 
 # Get info from tracklets
 def get_obstacle_from_tracklet(tracklet_file):
@@ -139,7 +140,7 @@ if __name__ == '__main__':
         # Draw box from tracklet file on the images
         pointcloud_timestamp = int(name)         # Assuming that the name is the timestamp!!
         camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp, timestamp_offset)
-        print ('Timestamps: pointcloud={}, camera={}, diff={}'.format(pointcloud_timestamp, camera_timestamp, abs(int(pointcloud_timestamp)-int(camera_timestamp))))
+        #print ('Timestamps: pointcloud={}, camera={}, diff={}'.format(pointcloud_timestamp, camera_timestamp, abs(int(pointcloud_timestamp)-int(camera_timestamp))))
         #boxes3d = np.load(boxes3d_file)
 
         #save pointcloud as image
