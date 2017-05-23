@@ -117,8 +117,8 @@ class DataReader(object):
 
     def convert_image_to_classes(self, image):
         classes=np.zeros((image.shape[0], image.shape[1], 2))
-        classes[:,:,1] = image/255      # Assume 255 is the colour we've used to denote an object of class 1?
-        classes[:,:,0] = 1-classes[:,:,1] # Swap 0s for 1s for class 0 (should be just the background!)
+        classes[:,:,0] = image/255      # Assume 255 is the colour we've used to denote an object of class 1?
+        classes[:,:,1] = 1-classes[:,:,1] # Swap 0s for 1s for class 0 (should be just the background!)
         return classes
 
     # TODO - These 2 functions are not DRY!!!
