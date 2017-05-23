@@ -165,7 +165,6 @@ class DataReader(object):
             y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
             y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.train_batch_pointer += batch_size
-        # return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
         return np.array(x_out, dtype=np.uint8), np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(1,400,400,1)
 
 
@@ -185,7 +184,5 @@ class DataReader(object):
             y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
             y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.val_batch_pointer += batch_size
-        #return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
-        #return np.array(x_out), np.array(y_out_obj)[:,:,:,0].reshape(1,400,400,1)
         return np.array(x_out, dtype=np.uint8), np.array(y_out_obj, dtype=np.uint8)[:, :, :, 0].reshape(1, 400, 400, 1)
 

@@ -52,10 +52,6 @@ def main():
     tracklet_file = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/predicted_tracklets.xml'
 
     start_step = 0
-    #LossHistory, model = nn.top_nn(weights_path=args.weights_path)
-    #summary = model.summary()
-    #print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
-
 
     pcl_data = pd.read_csv(PCL_CSV)   # TODO: Needed?
 
