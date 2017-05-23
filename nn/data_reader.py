@@ -107,11 +107,11 @@ class DataReader(object):
 
     def _predict_obj_y(self, obj_size, track):
         obj_y = np.zeros((top_x, top_y))
-        obj_y = draw_track_on_top(obj_y, obj_size, track, color=(255), fill=-1)
+        # TODO - May be quicker to use numpy instead of cv2 to create a filled box
+        obj_y = draw_track_on_top(obj_y, obj_size, track, color=(1,1,1), fill=-1)
         return obj_y
 
     # TODO - This needs reworking!! Assume we'll predict bbox by start location in our NN (todo!!)
-    # TODO - May be quicker to use numpy instead of cv2 to create a filled box
     def _predict_box_y(self, obj_size, track):
         box_y = np.zeros((top_x, top_y))
         box_y = draw_track_on_top(box_y, obj_size, track, color=(255))
@@ -119,8 +119,9 @@ class DataReader(object):
 
     def convert_image_to_classes(self, image):
         classes=np.zeros((image.shape[0], image.shape[1], 2))
-        classes[:,:,0] = image/255      # Assume 255 is the colour we've used to denote an object of class 1?
-        classes[:,:,1] = 1-classes[:,:,1] # Swap 0s for 1s for class 0 (should be just the background!)
+        classes[:,:,0] = image            # We set color to 1,1,1 for this!!
+        # TODO - Remove this?
+        classes[:,:,1] = 1-classes[:,:,0] # Swap 0s for 1s for class 0 (should be just the background!)
         return classes
 
     # TODO - These 2 functions are not DRY!!!
