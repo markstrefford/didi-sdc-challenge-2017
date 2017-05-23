@@ -183,7 +183,8 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
 
     model = Model(inputs=[inputs], outputs=[conv10])
 
-    model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
+    #model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
+    model.compile(optimizer=Adam(lr=1e-3), loss=dice_coef_loss, metrics=[dice_coef])
 
     if weights_path != None:
         print ('Loading weights from {}'.format(weights_path))

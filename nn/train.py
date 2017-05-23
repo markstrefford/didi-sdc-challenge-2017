@@ -70,7 +70,7 @@ def save_train_batch(i, xs, ys):
     np.save(ys_filename, ys)
 
 def main():
-    args=get_arguments()c
+    args=get_arguments()
 
     start_step = 0
     LossHistory, model = nn.top_nn()

@@ -25,7 +25,8 @@ from tracklets.generate_tracklet import *
 # TODO: Remove what's not needed here
 BATCH_SIZE = 8
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/'
-WEIGHTS_PATH='/vol/training/logs/model-final-step-99-val-0.993674.ckpt'
+#WEIGHTS_PATH='/vol/training/logs/model-final-step-99-val-0.993674.ckpt'
+WEIGHTS_PATH='/vol/training/logs/model-final-step-999-val-0.000966258.ckpt'
 
 # TODO: Only added in for initial code testing... remove asap!!
 PCL_IMAGE_PATH='/vol/dataset2/Didi-Release-2/Tracklets/1/2/processed/lidar_top_img/'
@@ -105,8 +106,8 @@ def main():
         cv2.imwrite(pcl_image_file, img)
         predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p0.jpg')
         cv2.imwrite(predict_image_file, predictions[t,:,:,0]*255)
-        predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p1.jpg')
-        cv2.imwrite(predict_image_file, predictions[t,:,:,1]*255)
+        # predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p1.jpg')
+        # cv2.imwrite(predict_image_file, predictions[t,:,:,1]*255)
         t += 1
 
     ## save
