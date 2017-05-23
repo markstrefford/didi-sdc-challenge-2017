@@ -21,10 +21,13 @@ from pointcloud_utils.timestamps_utils import get_camera_timestamp_and_index
 import numpy as np
 import pandas as pd
 import glob
+from sklearn.model_selection import train_test_split
 
 top_x, top_y, top_z = 400, 400, 8
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'
 BAG_CSV = '../data/training_data.csv'
+RANDOM_STATE = 202
+VALID_PERCENT = .25
 
 # Get camera timestamp and index closest to the pointcloud timestamp
 #TODO Create a utility function
@@ -64,7 +67,6 @@ class DataReader(object):
 
         self.train_batch_pointer = 0
         self.val_batch_pointer = 0
-        total = 0
 
         for idx, bag_info in self.bag_dataframe.iterrows():
             training_dir = bag_info.bag_directory
@@ -84,13 +86,11 @@ class DataReader(object):
 
             frame = 0
             for file in lidar_files:
-                if (frame >= bag_info.start_frame) and ( frame <= bag_info.end_frame or bag_info.end_frame == -1):
+                if (frame >= bag_info.start_frame) and ( frame < bag_info.end_frame or bag_info.end_frame == -1):
                     lidar_file = os.path.join(self.lidar_top_dir, file)
-
-                    #lidar = np.load(lidar_file)
                     xs.append(lidar_file)
+
                     pointcloud_timestamp = int(os.path.basename(file).replace('.npy', ''))
-                    #camera_timestamp, index = get_nearest_timestamp_and_index(camera_data, timestamp)
                     camera_timestamp, index = get_camera_timestamp_and_index(camera_data, pointcloud_timestamp,
                                                                              bag_info.time_offset)
 
@@ -101,20 +101,14 @@ class DataReader(object):
                     ys.append(y)
 
                 frame +=1
-                total +=1
 
         self.num_samples = len(xs)
         print('Found {} training samples'.format(self.num_samples))
 
-        # TODO: Split train and validation
-        self.train_xs = xs  #[:int(len(xs) * 0.8)]
-        self.train_ys = ys  #[:int(len(xs) * 0.8)]
-        self.val_xs = xs    #[-int(len(xs) * 0.2):]
-        self.val_ys = ys    #[-int(len(xs) * 0.2):]
-
+        self.train_xs, self.train_ys, self.val_xs , self.val_ys = train_test_split(xs, ys, test_size=VALID_PERCENT, random_state=RANDOM_STATE)
         self.num_train_samples = len(self.train_xs)
         self.num_val_samples = len(self.val_xs)
-
+        print ('DataReader.load(): Found {} training samples and {} validation samples'.format(self.num_train_samples, self.num_val_samples))
 
 
     # Get a list of all the bags we want to use
@@ -139,11 +133,13 @@ class DataReader(object):
         obj_y = draw_track_on_top(obj_y, obj_size, track, color=(1,1,1), fill=-1)
         return obj_y
 
+
     # TODO - This needs reworking!! Assume we'll predict bbox by start location in our NN (todo!!)
     def _predict_box_y(self, obj_size, track):
         box_y = np.zeros((top_x, top_y))
         box_y = draw_track_on_top(box_y, obj_size, track, color=(255))
         return box_y
+
 
     def convert_image_to_classes(self, image):
         classes=np.zeros((image.shape[0], image.shape[1], 2))
@@ -151,6 +147,7 @@ class DataReader(object):
         # TODO - Remove this?
         classes[:,:,1] = 1-classes[:,:,0] # Swap 0s for 1s for class 0 (should be just the background!)
         return classes
+
 
     # TODO - These 2 functions are not DRY!!!
     def load_train_batch(self, batch_size=1):
@@ -170,6 +167,7 @@ class DataReader(object):
         self.train_batch_pointer += batch_size
         # return np.array(x_out), [np.array(y_out_obj), np.array(y_out_box)]
         return np.array(x_out, dtype=np.uint8), np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(1,400,400,1)
+
 
     # TODO - These 2 functions are not DRY!!!
     def load_val_batch(self, batch_size):
