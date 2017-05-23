@@ -135,6 +135,19 @@ def dice_coef(y_true, y_pred):
 def dice_coef_loss(y_true, y_pred):
     return -dice_coef(y_true, y_pred)
 
+
+# From https://github.com/vxy10/p5_VehicleDetection_Unet/blob/master/main_car_Unet_train_IoU.ipynb
+def IOU_calc(y_true, y_pred):
+    y_true_f = K.flatten(y_true)
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    return 2 * (intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
+
+
+def IOU_calc_loss(y_true, y_pred):
+    return -IOU_calc(y_true, y_pred)
+
+
 def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     class LossHistory(Callback):
         def on_train_begin(self, logs={}):
@@ -184,7 +197,9 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     model = Model(inputs=[inputs], outputs=[conv10])
 
     #model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
-    model.compile(optimizer=Adam(lr=1e-3), loss=dice_coef_loss, metrics=[dice_coef])
+    #model.compile(optimizer=Adam(lr=1e-3), loss=dice_coef_loss, metrics=[dice_coef])
+    model.compile(optimizer=Adam(lr=1e-4),
+                  loss=IOU_calc_loss, metrics=[IOU_calc])
 
     if weights_path != None:
         print ('Loading weights from {}'.format(weights_path))
