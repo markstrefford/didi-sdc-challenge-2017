@@ -99,13 +99,12 @@ class DataReader(object):
                     # r = tracks[index]['rotation']
                     # FIXME: Size is the same for all tracks...?
                     y = np.array([obj_size, tracks[index]])
-                    print ('y={}'.format(y))
+                    #print ('y={}'.format(y))
                     ys.append(y)
 
                 frame +=1
 
         self.num_samples = len(xs)
-        print('Found {} training samples'.format(self.num_samples))
         self.train_xs, self.val_xs, self.train_ys, self.val_ys = train_test_split(xs, ys, test_size=VALID_PERCENT, random_state=RANDOM_STATE)
         self.num_train_samples = len(self.train_xs)
         self.num_val_samples = len(self.val_xs)
@@ -152,7 +151,7 @@ class DataReader(object):
 
     # TODO - These 2 functions are not DRY!!!
     def load_train_batch(self, batch_size=1):
-        print ('load_train_batch(): batch = self.train_batch_pointer')
+        print ('load_train_batch(): batch = {}'.format(self.train_batch_pointer))
         x_out = []
         y_out_obj = []
         y_out_box = []
