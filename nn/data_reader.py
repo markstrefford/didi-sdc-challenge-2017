@@ -24,8 +24,8 @@ import glob
 from sklearn.model_selection import train_test_split
 
 top_x, top_y, top_z = 400, 400, 8
-#DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'    #GCP
-DATA_DIR = '/vol/didi/dataset2/Tracklets'               #Mac
+DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'    #GCP
+#DATA_DIR = '/vol/didi/dataset2/Tracklets'               #Mac
 RANDOM_STATE = 202
 VALID_PERCENT = .25
 

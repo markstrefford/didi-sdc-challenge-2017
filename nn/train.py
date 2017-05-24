@@ -89,7 +89,7 @@ def main():
     for i in range(start_step, start_step + args.num_steps):
         xs, ys = data_reader.load_train_batch(batch_size=args.batch_size)
 
-        train_error = 0 #FIXME: model.train_on_batch(xs, ys) #, callbacks = [early_stop, checkpoint, tensorboard])
+        train_error = model.train_on_batch(xs, ys) #, callbacks = [early_stop, checkpoint, tensorboard])
         print ('{}/{}: Training loss: {}'.format(i, start_step + args.num_steps, train_error))
 
         if i % 10 == 0:
