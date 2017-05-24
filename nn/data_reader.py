@@ -16,7 +16,7 @@ import sys
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
 from tracklets.parse_tracklet import Tracklet, parse_xml
 from pointcloud_utils.lidar_top import draw_track_on_top
-from pointcloud_utils.timestamps_utils import get_camera_timestamp_and_index
+from pointcloud_utils.timestamp_utils import get_camera_timestamp_and_index
 
 import numpy as np
 import pandas as pd
@@ -24,8 +24,8 @@ import glob
 from sklearn.model_selection import train_test_split
 
 top_x, top_y, top_z = 400, 400, 8
-DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'
-BAG_CSV = '../data/training_data.csv'
+#DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'    #GCP
+DATA_DIR = '/vol/didi/dataset2/Tracklets'               #Mac
 RANDOM_STATE = 202
 VALID_PERCENT = .25
 
@@ -55,10 +55,8 @@ def get_obstacle_from_tracklet(tracklet_file):
 # TODO: Make this work with multiple bags
 # TODO: Make this work with multiple trackable objects
 class DataReader(object):
-    def __init__(self, base_dir, bag_dataframe):
-        self.bag_dataframe = bag_dataframe
-        #self.training_dir = base_dir
-        #self.lidar_top_dir = os.path.join(self.training_dir, 'processed/lidar_top')
+    def __init__(self, bag_csv):
+        self.bag_dataframe = self._get_bag_list(bag_csv)
         self.load()
 
     def load(self):
@@ -73,21 +71,24 @@ class DataReader(object):
             print ('Processing training data: {}'.format(training_dir))
 
             #image_dir = os.path.join(self.training_dir, 'camera')
+
             camera_csv = os.path.join(training_dir, 'capture_vehicle_camera.csv')   # We're driven by camera messages
             pointcloud_csv = os.path.join(training_dir, 'capture_vehicle_pointcloud.csv')
             object_csv = os.path.join(training_dir, 'objects_obs1_rear_rtk_interpolated.csv')
             tracklet_file = os.path.join(training_dir, 'tracklet_labels.xml')
+            lidar_top_dir = os.path.join(training_dir, 'processed/lidar_top')
+
 
             camera_data = pd.read_csv(camera_csv)  # ['timestamp']
             obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
             #print ('Loaded tracklets {}'.format(tracks))
 
-            lidar_files = sorted(glob.glob(os.path.join(self.lidar_top_dir, '*.npy')))
+            lidar_files = sorted(glob.glob(os.path.join(lidar_top_dir, '*.npy')))
 
             frame = 0
             for file in lidar_files:
                 if (frame >= bag_info.start_frame) and ( frame < bag_info.end_frame or bag_info.end_frame == -1):
-                    lidar_file = os.path.join(self.lidar_top_dir, file)
+                    lidar_file = os.path.join(lidar_top_dir, file)
                     xs.append(lidar_file)
 
                     pointcloud_timestamp = int(os.path.basename(file).replace('.npy', ''))
@@ -98,14 +99,14 @@ class DataReader(object):
                     # r = tracks[index]['rotation']
                     # FIXME: Size is the same for all tracks...?
                     y = np.array([obj_size, tracks[index]])
+                    print ('y={}'.format(y))
                     ys.append(y)
 
                 frame +=1
 
         self.num_samples = len(xs)
         print('Found {} training samples'.format(self.num_samples))
-
-        self.train_xs, self.train_ys, self.val_xs , self.val_ys = train_test_split(xs, ys, test_size=VALID_PERCENT, random_state=RANDOM_STATE)
+        self.train_xs, self.val_xs, self.train_ys, self.val_ys = train_test_split(xs, ys, test_size=VALID_PERCENT, random_state=RANDOM_STATE)
         self.num_train_samples = len(self.train_xs)
         self.num_val_samples = len(self.val_xs)
         print ('DataReader.load(): Found {} training samples and {} validation samples'.format(self.num_train_samples, self.num_val_samples))
@@ -113,14 +114,14 @@ class DataReader(object):
 
     # Get a list of all the bags we want to use
     # Note we are using a pre-generated CSV to circumvent some of the data issues in Udacity dataset2
-    def get_bag_list(self):
-        bag_dataframe = pd.read_csv(BAG_CSV)
+    def _get_bag_list(self, bag_csv):
+        bag_dataframe = pd.read_csv(bag_csv)
         bag_dataframe['start_frame'].fillna(0, inplace=True)
         bag_dataframe['end_frame'].fillna(-1, inplace=True)
 
         training_bag_files = []
         for idx, training_row in bag_dataframe.iterrows():
-            bag = os.path.join(DATA_DIR, 'Tracklets', str(training_row.directory), str(training_row.bag))
+            bag = os.path.join(DATA_DIR, str(training_row.directory), str(training_row.bag))
             training_bag_files.append(bag)
 
         bag_dataframe['bag_directory'] = training_bag_files
@@ -151,6 +152,7 @@ class DataReader(object):
 
     # TODO - These 2 functions are not DRY!!!
     def load_train_batch(self, batch_size=1):
+        print ('load_train_batch(): batch = self.train_batch_pointer')
         x_out = []
         y_out_obj = []
         y_out_box = []
@@ -160,8 +162,10 @@ class DataReader(object):
             pointcloud = np.load(file)
             x_out.append(pointcloud)
             # FIXME: Prediction code is single object only at the moment
+            #print('load_train_batch(): index={}, pointcloud_file={}, train_ys={}'.format(index, file, self.train_ys[index]))
             obj_size = self.train_ys[index][0]
             obj_track = self.train_ys[index][1]
+            #print ('load_train_batch(): obj_size={}, obj_track={}'.format(obj_size, obj_track))
             y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
             y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.train_batch_pointer += batch_size

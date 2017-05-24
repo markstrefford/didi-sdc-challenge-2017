@@ -28,7 +28,7 @@ BATCH_SIZE = 1
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/'
 LOGDIR = '/vol/training/logs'
 TRAIN_DIR = '/vol/dataset2/Didi-Release-2/Train/'
-CSV='data.csv'
+BAG_CSV = 'data/training_data.csv'        # TODO - add back into args
 CHECKPOINT_EVERY = 100
 NUM_STEPS = int(1e2)   # Run for 100 steps
 CKPT_FILE = 'model.ckpt'
@@ -45,7 +45,7 @@ def get_arguments():
                         action='store', dest='batch_size', help='Number of [camera] samples in batch.')
     parser.add_argument('--data_dir', '--data', type=str, default=DATA_DIR,
                         action='store', dest='data_dir', help='The directory containing the training data.')
-    # parser.add_argument('--data_csv', '--csv', type=str, default=CSV,
+    # parser.add_argument('--data_csv', '--csv', type=str, default=BAG_CSV,
     #                     action='store', dest='csv', help='The csv containing the training data.')
     parser.add_argument('--logdir', type=str, default=LOGDIR,
                         help='Directory for log files.')
@@ -63,11 +63,11 @@ def get_arguments():
                         default=L2_REG)
     return parser.parse_args()
 
-def save_train_batch(i, xs, ys):
-    xs_filename = os.path.join(TRAIN_DIR, str(i) + '_xs.npy')
-    ys_filename = os.path.join(TRAIN_DIR, str(i) + '_ys.npy')
-    np.save(xs_filename, xs)
-    np.save(ys_filename, ys)
+# def save_train_batch(i, xs, ys):
+#     xs_filename = os.path.join(TRAIN_DIR, str(i) + '_xs.npy')
+#     ys_filename = os.path.join(TRAIN_DIR, str(i) + '_ys.npy')
+#     np.save(xs_filename, xs)
+#     np.save(ys_filename, ys)
 
 def main():
     args=get_arguments()
@@ -83,14 +83,13 @@ def main():
                                  period=1)
     tensorboard = TensorBoard(log_dir='../logs/', histogram_freq=0, write_graph=True, write_images=False)
 
-    data_reader = DataReader(args.data_dir)
+    data_reader = DataReader(BAG_CSV)
 
     #FIXME: Based on number of steps, convert to number of epochs
     for i in range(start_step, start_step + args.num_steps):
         xs, ys = data_reader.load_train_batch(batch_size=args.batch_size)
 
-        save_train_batch(i,xs, ys)
-        train_error = model.train_on_batch(xs, ys) #, callbacks = [early_stop, checkpoint, tensorboard])
+        train_error = 0 #FIXME: model.train_on_batch(xs, ys) #, callbacks = [early_stop, checkpoint, tensorboard])
         print ('{}/{}: Training loss: {}'.format(i, start_step + args.num_steps, train_error))
 
         if i % 10 == 0:
