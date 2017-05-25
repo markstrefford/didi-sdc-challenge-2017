@@ -55,7 +55,7 @@ def get_obstacle_from_tracklet(tracklet_file):
 # TODO: Make this work with multiple bags
 # TODO: Make this work with multiple trackable objects
 class DataReader(object):
-    def __init__(self, bag_csv):
+    def __init__(self, bag_csv, data_dir):
         self.bag_dataframe = self._get_bag_list(bag_csv)
         self.load()
 
