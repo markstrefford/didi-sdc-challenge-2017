@@ -128,6 +128,7 @@ class DataReader(object):
 
 
     def _predict_obj_y(self, obj_size, track):
+        print ('_predict_obj_y(): obj_size={}, track={}'.format(obj_size, track))
         obj_y = np.zeros((top_x, top_y))
         # TODO - May be quicker to use numpy instead of cv2 to create a filled box
         obj_y = draw_track_on_top(obj_y, obj_size, track, color=(1,1,1), fill=-1)
@@ -160,15 +161,17 @@ class DataReader(object):
             file = self.train_xs[index]
             pointcloud = np.load(file)
             x_out.append(pointcloud)
+            print ('load_train_batch(): pointcloud file = {}'.format(file))
             # FIXME: Prediction code is single object only at the moment
-            #print('load_train_batch(): index={}, pointcloud_file={}, train_ys={}'.format(index, file, self.train_ys[index]))
             obj_size = self.train_ys[index][0]
             obj_track = self.train_ys[index][1]
-            #print ('load_train_batch(): obj_size={}, obj_track={}'.format(obj_size, obj_track))
             y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
             y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.train_batch_pointer += batch_size
-        return np.array(x_out, dtype=np.uint8), np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(1,400,400,1)
+        x_out = np.array(x_out, dtype=np.uint8)
+        y_out_obj = np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(batch_size,400,400,1)
+        print ('load_train_batch(): x_out.shape={}, y.out_obj.shape={}'.format(x_out.shape, y_out_obj.shape))
+        return x_out, y_out_obj
 
 
     # TODO - These 2 functions are not DRY!!!
@@ -187,5 +190,5 @@ class DataReader(object):
             y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
             y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.val_batch_pointer += batch_size
-        return np.array(x_out, dtype=np.uint8), np.array(y_out_obj, dtype=np.uint8)[:, :, :, 0].reshape(1, 400, 400, 1)
+        return np.array(x_out, dtype=np.uint8), np.array(y_out_obj, dtype=np.uint8)[:, :, :, 0].reshape(batch_size, 400, 400, 1)
 
