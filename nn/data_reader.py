@@ -120,7 +120,17 @@ class DataReader(object):
 
         training_bag_files = []
         for idx, training_row in bag_dataframe.iterrows():
-            bag = os.path.join(DATA_DIR, str(int(training_row.directory)), str(int(training_row.bag)))
+            if type(training_row.directory) is str:
+                directory = training_row.directory
+            else:
+                directory = str(int(training_row.directory))
+
+            if type(training_row.bag) is str:
+                bag = training_row.bag
+            else:
+                bag = str(int(training_row.bag))
+
+            bag = os.path.join(DATA_DIR, directory, bag)
             training_bag_files.append(bag)
 
         bag_dataframe['bag_directory'] = training_bag_files

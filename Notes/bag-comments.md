@@ -7,7 +7,7 @@
 | 1/4_f | Stationary obstacle in front, then drives away.  Camera car stationary.  | 24 | Appears to work ok with default settings |
 | 1/6_f | Obstacle in front, drives away after a 1-2 seconds.  Camera car stationary.  | 11 |  Default settings show increasing error as the obstacle drives away |
 | 1/8_f | Camera car driving round in circles. Stationary obstacle and also tree/pole in line of site. Obstacle drives away | 5 | Doesn't work with default settings.  *Suggest ignoring this for training.* |
-| 1/9_f | Camera car driving round in straight line. Pulls up to the left of stationary obstacle   | 5 | Works ok on default settings |
+| 1/9_f | Camera car driving in straight line. Pulls up to the left of stationary obstacle   | 5 | Works ok on default settings |
 |  1/10 | Same as 9_f, but starts further away | 9 | Appears to work ok with default settings.  After frame 170ish, the car is split across left and right in surround view so that bounding box doesn't render correctly.   |  
 | 1/11  | Same as 10, but obstacle on left of capture vehicle  | 11  |  Works well with default settings |
 | 1/13  | Similar to 11, but capture vehicle drives past obstacle. Obj car facing capture vehicle | 11  | Works well with default settings  |
