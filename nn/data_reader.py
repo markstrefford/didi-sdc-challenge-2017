@@ -151,6 +151,7 @@ class DataReader(object):
 
 
     # TODO - These 2 functions are not DRY!!!
+
     def load_train_batch(self, batch_size=1):
         print ('load_train_batch(): batch = {}'.format(self.train_batch_pointer))
         x_out = []
@@ -161,7 +162,6 @@ class DataReader(object):
             file = self.train_xs[index]
             pointcloud = np.load(file)
             x_out.append(pointcloud)
-            print ('load_train_batch(): pointcloud file = {}'.format(file))
             # FIXME: Prediction code is single object only at the moment
             obj_size = self.train_ys[index][0]
             obj_track = self.train_ys[index][1]
@@ -170,11 +170,9 @@ class DataReader(object):
         self.train_batch_pointer += batch_size
         x_out = np.array(x_out, dtype=np.uint8)
         y_out_obj = np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(batch_size,400,400,1)
-        print ('load_train_batch(): x_out.shape={}, y.out_obj.shape={}'.format(x_out.shape, y_out_obj.shape))
         return x_out, y_out_obj
 
 
-    # TODO - These 2 functions are not DRY!!!
     def load_val_batch(self, batch_size):
         x_out = []
         y_out_obj = []
@@ -190,5 +188,7 @@ class DataReader(object):
             y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
             y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
         self.val_batch_pointer += batch_size
-        return np.array(x_out, dtype=np.uint8), np.array(y_out_obj, dtype=np.uint8)[:, :, :, 0].reshape(batch_size, 400, 400, 1)
+        x_out = np.array(x_out, dtype=np.uint8)
+        y_out_obj = np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(batch_size,400,400,1)
+        return x_out, y_out_obj
 

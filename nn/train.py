@@ -25,7 +25,7 @@ from keras.callbacks import Callback, TensorBoard, EarlyStopping, ModelCheckpoin
 #BATCH_SIZE = 32
 BATCH_SIZE = 1
 #DATA_DIR = '/vol/didi/dataset2/Tracklets/1/2/'
-DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/'
+DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/'
 LOGDIR = '/vol/training/logs'
 TRAIN_DIR = '/vol/dataset2/Didi-Release-2/Train/'
 BAG_CSV = 'data/training_data.csv'        # TODO - add back into args
@@ -83,7 +83,7 @@ def main():
                                  period=1)
     tensorboard = TensorBoard(log_dir='../logs/', histogram_freq=0, write_graph=True, write_images=False)
 
-    data_reader = DataReader(BAG_CSV)
+    data_reader = DataReader(BAG_CSV, DATA_DIR)
 
     #FIXME: Based on number of steps, convert to number of epochs
     for i in range(start_step, start_step + args.num_steps):
