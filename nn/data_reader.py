@@ -128,7 +128,7 @@ class DataReader(object):
 
 
     def _predict_obj_y(self, obj_size, track):
-        print ('_predict_obj_y(): obj_size={}, track={}'.format(obj_size, track))
+        #print ('_predict_obj_y(): obj_size={}, track={}'.format(obj_size, track))
         obj_y = np.zeros((top_x, top_y))
         # TODO - May be quicker to use numpy instead of cv2 to create a filled box
         obj_y = draw_track_on_top(obj_y, obj_size, track, color=(1,1,1), fill=-1)
