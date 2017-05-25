@@ -158,6 +158,7 @@ class DataReader(object):
         y_out_obj = []
         y_out_box = []
         for i in range(0, batch_size):
+	    #print ('load_train_batch(): self.train_batch_pointer={}, i={}, self.num_train_samples={}'.format(self.train_batch_pointer,i,self.num_train_samples))
             index = (self.train_batch_pointer + i) % self.num_train_samples
             file = self.train_xs[index]
             pointcloud = np.load(file)
