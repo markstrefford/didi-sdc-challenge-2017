@@ -64,7 +64,7 @@ def main():
     data_reader = TestReader(args.data_dir)
 
     xs = data_reader.load_test_batch(batch_size=data_reader.num_samples)   # Get all samples
-        
+
     predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
     predict_output_file = os.path.join(PREDICT_OUTPUT, 'predictions.npy')
     np.save(predict_output_file, predictions)

@@ -59,12 +59,12 @@ class TestReader(object):
         self.test_dir = test_dir
         self.load()
 
-    def load(self, test_dir):
+    def load(self):
         xs=[]
 
         self.test_batch_pointer = 0
-        print ('Processing test data: {}'.format(test_dir))
-        lidar_top_dir = os.path.join(test_dir, 'processed/lidar_top')
+        print ('Processing test data: {}'.format(self.test_dir))
+        lidar_top_dir = os.path.join(self.test_dir, 'processed/lidar_top')
         lidar_files = sorted(glob.glob(os.path.join(lidar_top_dir, '*.npy')))
 
         frame = 0
