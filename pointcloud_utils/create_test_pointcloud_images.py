@@ -67,6 +67,7 @@ if __name__ == '__main__':
 
     for file in sorted(glob.glob(lidar_dir + '/*.npy')):
         name = os.path.basename(file).replace('.npy','')
+	print ('Processing {}.'.format(name))
 
         lidar_file    = lidar_dir +'/'+name+'.npy'
         top_file      = lidar_top_dir +'/'+name+'.npy'

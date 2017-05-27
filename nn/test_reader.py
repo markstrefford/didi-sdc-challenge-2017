@@ -96,15 +96,15 @@ class TestReader(object):
     # TODO - These 2 functions are not DRY!!!
 
     def load_test_batch(self, batch_size=1):
-        print ('load_train_batch(): batch = {}'.format(self.train_batch_pointer))
+        #print ('load_train_batch(): batch = {}'.format(self.train_batch_pointer))
         x_out = []
-        for i in range(0, batch_size):
-            index = (self.train_batch_pointer + i) % self.num_train_samples
+        for index in range(0, batch_size):
+            #index = (self.train_batch_pointer + i) % self.num_train_samples
             file = self.train_xs[index]
             pointcloud = np.load(file)
             x_out.append(pointcloud)
             # FIXME: Prediction code is single object only at the moment
-        self.train_batch_pointer += batch_size
+        #self.train_batch_pointer += batch_size
         x_out = np.array(x_out, dtype=np.uint8)
         return x_out
 
