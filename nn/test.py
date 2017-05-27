@@ -67,9 +67,9 @@ def main():
 
     for i in range(args.batch_size):
 
-    predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
-    predict_output_file = os.path.join(PREDICT_OUTPUT, 'predictions.npy')
-    np.save(predict_output_file, predictions)
+        predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
+        predict_output_file = os.path.join(PREDICT_OUTPUT, str(data_reader.test_batch_pointer) + '_predictions.npy')
+        np.save(predict_output_file, predictions)
 
     # collection = TrackletCollection()
     # for p in predictions:
