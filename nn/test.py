@@ -29,7 +29,7 @@ import argparse
 from test_reader import TestReader
 from tracklets.generate_tracklet import *
 
-BATCH_SIZE = 1
+BATCH_SIZE = 8
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Round_1_Test_Tracklets/19_fpc2/'
 WEIGHTS_PATH='/vol/training/logs/'
 PREDICT_OUTPUT=os.path.join(DATA_DIR, 'images')
@@ -65,16 +65,16 @@ def main():
     timestamps = data_reader.get_timestamps()
 
     frame = 0
-    for batch in range(data_reader.num_test_samples / args.batch_size):
+    num_batches = data_reader.num_test_samples / args.batch_size
+    for batch in range(num_batches):
+        print ('Batch: {}/{}'.format(batch, num_batches))
         xs = data_reader.load_test_batch(batch_size=args.batch_size)   # Get all samples
+        predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
 
         for i in range(args.batch_size):
             timestamp = timestamps[frame]
-            predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
             #predict_output_file = os.path.join(PREDICT_OUTPUT, str(data_reader.test_batch_pointer) + '_predictions.npy')
             #np.save(predict_output_file, predictions)
-
-            # Load lidar_top image
 
             im = np.array(data_reader.get_lidar_top_image(timestamp), dtype=np.uint8)
             im_pred = np.array(255 * predictions[i, :, :, 0], dtype=np.uint8)
@@ -88,7 +88,7 @@ def main():
 
             frame += 1
 
-            
+
 if __name__ == '__main__':
     main()
 

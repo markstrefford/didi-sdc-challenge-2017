@@ -82,5 +82,4 @@ class TestReader(object):
     def get_lidar_top_image(self, timestamp):
         filename = os.path.join(self.lidar_top_image_dir, str(timestamp) + '.png')
         image = cv2.imread(filename)
-        print ('get_lidar_top_image({}): image.shape={}'.format(timestamp, image.shape))
         return image
