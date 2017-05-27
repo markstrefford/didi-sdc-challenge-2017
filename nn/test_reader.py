@@ -51,7 +51,9 @@ class TestReader(object):
             frame +=1
 
         self.num_test_samples = len(xs)
+        self.test_xs = xs
         print ('TestReader.load(): Found {} testing samples'.format(self.num_test_samples))
+        print (self.test_xs)
 
 
     # TODO - These 2 functions are not DRY!!!
@@ -67,6 +69,7 @@ class TestReader(object):
             # FIXME: Prediction code is single object only at the moment
         self.test_batch_pointer += batch_size
         x_out = np.array(x_out, dtype=np.uint8)
+        print ('load_test_batch(): batch={}, x_out.shape={}'.format(self.test_batch_pointer, x_out.shape))
         return x_out
 
 
