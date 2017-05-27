@@ -60,13 +60,11 @@ class TestReader(object):
         self.lidar_top_image_dir = lidar_top_image_dir
 
         print ('TestReader.load(): Found {} testing samples'.format(self.num_test_samples))
-        print (self.test_xs)
 
 
     # TODO - These 2 functions are not DRY!!!
 
     def load_test_batch(self, batch_size=1):
-        print ('load_train_batch(): batch = {}'.format(self.test_batch_pointer))
         x_out = []
         for i in range(0, batch_size):
             index = (self.test_batch_pointer + i) % self.num_test_samples
@@ -76,14 +74,13 @@ class TestReader(object):
             # FIXME: Prediction code is single object only at the moment
         self.test_batch_pointer += batch_size
         x_out = np.array(x_out, dtype=np.uint8)
-        print ('load_test_batch(): batch={}, x_out.shape={}'.format(self.test_batch_pointer, x_out.shape))
         return x_out
 
     def get_timestamps(self):
         return self.test_timestamps
 
     def get_lidar_top_image(self, timestamp):
-        filename = os.path.join(self.lidar_top_image_dir, timestamp + '.png')
+        filename = os.path.join(self.lidar_top_image_dir, str(timestamp) + '.png')
         image = cv2.imread(filename)
         print ('get_lidar_top_image({}): image.shape={}'.format(timestamp, image.shape))
         return image
