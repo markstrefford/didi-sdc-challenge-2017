@@ -12,6 +12,14 @@ Example:
 #TODO: This will evolve over time to handle more than 1 obstacle
 #TODO: Subscribe to ROS messages
 
+
+#TODO: Do this for the stage 1
+#
+# 1. Set correct default values
+# 2. Render object proposals to files in PREDICT_OUTPUT/images as jpeg (code already written to render them in notebook)
+# 3. Create a mpeg from it so that we can watch it later!!
+# 4.
+
 import os
 import nn
 import cv2
@@ -19,19 +27,12 @@ import numpy as np
 import pandas as pd
 import argparse
 from data_reader import DataReader
-from tracklets.parse_tracklet import Tracklet, parse_xml
 from tracklets.generate_tracklet import *
 
-# TODO: Remove what's not needed here
 BATCH_SIZE = 8
-DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/'
-#WEIGHTS_PATH='/vol/training/logs/model-final-step-99-val-0.993674.ckpt'
-WEIGHTS_PATH='/vol/training/logs/model-final-step-999-val-0.000966258.ckpt'
-
-# TODO: Only added in for initial code testing... remove asap!!
-PCL_IMAGE_PATH='/vol/dataset2/Didi-Release-2/Tracklets/1/2/processed/lidar_top_img/'
-PCL_CSV='/vol/dataset2/Didi-Release-2/Tracklets/1/2/capture_vehicle_pointcloud.csv'
-PREDICT_OUTPUT='/vol/dataset2/Didi-Release-2/Predict/'
+DATA_DIR = '/vol/dataset2/Didi-Release-2/Round_1_Test_Tracklets/'
+WEIGHTS_PATH='/vol/training/logs/'
+PREDICT_OUTPUT=os.path.join(DATA_DIR, 'images')
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Udacity Challenge Testing Script')
@@ -49,11 +50,8 @@ def get_arguments():
 
 def main():
     args=get_arguments()
-    tracklet_file = '/vol/dataset2/Didi-Release-2/Tracklets/1/2/predicted_tracklets.xml'
 
-    start_step = 0
 
-    pcl_data = pd.read_csv(PCL_CSV)   # TODO: Needed?
 
     LossHistory, model = nn.top_nn(weights_path=WEIGHTS_PATH)
     summary = model.summary()
