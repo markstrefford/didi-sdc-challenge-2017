@@ -63,36 +63,14 @@ def main():
     print('test.py: args.data_dir={}'.format(args.data_dir))
     data_reader = TestReader(args.data_dir)
 
-    xs = data_reader.load_test_batch(batch_size=args.batch_size)   # Get all samples
+    for batch in range(data_reader.num_test_samples / args.batch_size):
+        xs = data_reader.load_test_batch(batch_size=args.batch_size)   # Get all samples
 
-    for i in range(args.batch_size):
+        for i in range(args.batch_size):
 
-        predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
-        predict_output_file = os.path.join(PREDICT_OUTPUT, str(data_reader.test_batch_pointer) + '_predictions.npy')
-        np.save(predict_output_file, predictions)
-
-    # collection = TrackletCollection()
-    # for p in predictions:
-    #
-    #     # # Load relevant pcl image
-    #     # pcl_image = cv2.imread(pcl_image_file)
-    #     # img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud
-    #     # img = pcl_image
-    #     #
-    #     # # Merge with the prediction
-    #     # img[:,:,2] = predictions[t,:,:,0]*255
-    #
-    #     # Render the combined image
-    #     #cv2.imshow('predict[0]', img)
-    #     #cv2.waitKey(1)
-    #     pcl_image_file = os.path.join(PREDICT_OUTPUT, str(frame) + '_pcl.jpg')
-    #     cv2.imwrite(pcl_image_file, img)
-    #     predict_image_file = os.path.join(PREDICT_OUTPUT, str(frame) + '_p0.jpg')
-    #     cv2.imwrite(predict_image_file, predictions[t,:,:,0]*255)
-    #     t += 1
-
-    ## save
-    #collection.write_xml(tracklet_file)
+            predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
+            predict_output_file = os.path.join(PREDICT_OUTPUT, str(data_reader.test_batch_pointer) + '_predictions.npy')
+            np.save(predict_output_file, predictions)
 
 if __name__ == '__main__':
     main()
