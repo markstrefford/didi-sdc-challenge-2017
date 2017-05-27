@@ -25,31 +25,7 @@ from sklearn.model_selection import train_test_split
 
 top_x, top_y, top_z = 400, 400, 8
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'    #GCP
-#DATA_DIR = '/vol/didi/dataset2/Tracklets'               #Mac
-RANDOM_STATE = 202
-VALID_PERCENT = .25
 
-# Get camera timestamp and index closest to the pointcloud timestamp
-#TODO Create a utility function
-# def get_nearest_timestamp_and_index(data, timestamp):
-#     index = data.ix[(data.timestamp - timestamp).abs().argsort()[:1]].index[0]
-#     data_timestamp = data.ix[index].timestamp
-#     return data_timestamp, index
-
-# Get info from tracklets
-#TODO Create a utility function
-def get_obstacle_from_tracklet(tracklet_file):
-    tracks = []
-    tracklets = parse_xml(tracklet_file)
-    for track in tracklets:
-        obj_size = track.size    #FIXME: Single obstacle per tracklet file
-        for translation, rotation, state, occlusion, truncation, amtOcclusion, amtBorders, absoluteFrameNumber in track:
-            tracks.append({
-                'frame': absoluteFrameNumber,
-                'translation': translation,
-                'rotation': rotation
-            })          # TODO: Add in other tracklets info as required
-    return obj_size, tracks
 
 # Use file-based training for now, single bag file
 # TODO: Make this work with multiple bags
@@ -74,37 +50,22 @@ class TestReader(object):
             xs.append(lidar_file)
             frame +=1
 
-        self.num_samples = len(xs)
-        print ('TestReader.load(): Found {} testing samples'.format(self.num_samples))
-
-
-    def _predict_obj_y(self, obj_size, track):
-        #print ('_predict_obj_y(): obj_size={}, track={}'.format(obj_size, track))
-        obj_y = np.zeros((top_x, top_y))
-        # TODO - May be quicker to use numpy instead of cv2 to create a filled box
-        obj_y = draw_track_on_top(obj_y, obj_size, track, color=(1,1,1), fill=-1)
-        return obj_y
-
-
-    # TODO - This needs reworking!! Assume we'll predict bbox by start location in our NN (todo!!)
-    def _predict_box_y(self, obj_size, track):
-        box_y = np.zeros((top_x, top_y))
-        box_y = draw_track_on_top(box_y, obj_size, track, color=(255))
-        return box_y
+        self.num_test_samples = len(xs)
+        print ('TestReader.load(): Found {} testing samples'.format(self.num_test_samples))
 
 
     # TODO - These 2 functions are not DRY!!!
 
     def load_test_batch(self, batch_size=1):
-        #print ('load_train_batch(): batch = {}'.format(self.train_batch_pointer))
+        print ('load_train_batch(): batch = {}'.format(self.test_batch_pointer))
         x_out = []
-        for index in range(0, batch_size):
-            #index = (self.train_batch_pointer + i) % self.num_train_samples
-            file = self.train_xs[index]
+        for i in range(0, batch_size):
+            index = (self.test_batch_pointer + i) % self.num_test_samples
+            file = self.test_xs[index]
             pointcloud = np.load(file)
             x_out.append(pointcloud)
             # FIXME: Prediction code is single object only at the moment
-        #self.train_batch_pointer += batch_size
+        self.test_batch_pointer += batch_size
         x_out = np.array(x_out, dtype=np.uint8)
         return x_out
 

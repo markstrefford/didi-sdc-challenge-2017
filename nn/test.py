@@ -30,7 +30,7 @@ from test_reader import TestReader
 from tracklets.generate_tracklet import *
 
 BATCH_SIZE = 1
-DATA_DIR = '/vol/dataset2/Didi-Release-2/Round_1_Test_Tracklets/'
+DATA_DIR = '/vol/dataset2/Didi-Release-2/Round_1_Test_Tracklets/19_fpc2/'
 WEIGHTS_PATH='/vol/training/logs/'
 PREDICT_OUTPUT=os.path.join(DATA_DIR, 'images')
 
@@ -63,7 +63,9 @@ def main():
     print('test.py: args.data_dir={}'.format(args.data_dir))
     data_reader = TestReader(args.data_dir)
 
-    xs = data_reader.load_test_batch(batch_size=data_reader.num_samples)   # Get all samples
+    xs = data_reader.load_test_batch(batch_size=args.batch_size)   # Get all samples
+
+    for i in range(args.batch_size):
 
     predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
     predict_output_file = os.path.join(PREDICT_OUTPUT, 'predictions.npy')
