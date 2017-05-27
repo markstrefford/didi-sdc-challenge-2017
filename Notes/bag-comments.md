@@ -32,16 +32,16 @@
 | 2/14_f | Similar to 2/13 but obst starts on the right of capture vehicle and drives away (don't really see it in the camera) | 4 | |
 | 2/17 | Starts like 2/13.  Obst pulls up to left of capture vehicle, which then drives off, turns to the left and then drives straight | 22 | |
 | | | | |
-| 3/1 | Capture vehicle parked behind obstacle. Neither move.  Grass bank, etc. to the right | 97 | |
-| 3/2_f | Starts as 3/1, then obstacle drives away | 4 | |
-| 3/4 | As 3/2_f, but obstacle remains stationary and capture vehicle reverses away | 11 | |
-| 3/6 | Start alongside obstacle / to the rear, then reverse and pull in behind it as continues to reverse away (like an overtake in reverse?)|12 | |
-| 3/7| Capture vehicle comes up behind obstacle and then overtakes it on the right | 10 | |
-| 3/8 | Start to right of obstacle, then drive towards the grassy bank | 8 | |
-| 3/9 | Passing stationary obstacle on the right.  Obstacle facing us this time | 11 | |
-| 3/11_f| Driving straight, no obstacle.  Grassy bank to the right | 5 | |
-| 3/12_f | Same as 3/9 but obstacle moving  | 7 | |
-| 3/13_f | Same as 3/12_f but obstacle moving faster, grassy bank is closer to the right of the capture vehicle | | |
+| 3/1 | Capture vehicle parked behind obstacle. Neither move.  Grass bank, etc. to the right | 97 | t=0  Will use maybe 200 frames from this to stop skewing data!|
+| 3/2_f | Starts as 3/1, then obstacle drives away | 4 | t = -30|
+| 3/4 | As 3/2_f, but obstacle remains stationary and capture vehicle reverses away | 11 | t=0 |
+| 3/6 | Start alongside obstacle / to the rear, then reverse and pull in behind it as continues to reverse away (like an overtake in reverse?)|12 | t=0|
+| 3/7| Capture vehicle comes up behind obstacle and then overtakes it on the right | 10 | t=0 |
+| 3/8 | Start to right of obstacle, then drive towards the grassy bank | 8 | t=0 |
+| 3/9 | Passing stationary obstacle on the right.  Obstacle facing us this time | 11 | t=0 |
+| 3/11_f| Driving straight, obstacle behind capture vehicle.  Grassy bank to the right | 5 | t=0|
+| 3/12_f | Same as 3/9 but obstacle moving  | 7 | t=-11  |
+| 3/13_f | Same as 3/12_f but obstacle moving faster, grassy bank is closer to the right of the capture vehicle | | t=-11 |
 | 3/14 | Obstacle passes from left to right, then capture vehicle drives towards grassy bank | 13 | |
 | 3/15_f| Capture vehicle facing away from grassy bank, obstacle drives left to right in front, then capture vehicle moves off, turns right, and follows obstacle | 18 | |
 
