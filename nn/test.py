@@ -62,16 +62,35 @@ def main():
 
     print('test.py: args.data_dir={}'.format(args.data_dir))
     data_reader = TestReader(args.data_dir)
+    timestamps = data_reader.get_timestamps()
 
+    frame = 0
     for batch in range(data_reader.num_test_samples / args.batch_size):
         xs = data_reader.load_test_batch(batch_size=args.batch_size)   # Get all samples
 
         for i in range(args.batch_size):
 
             predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
-            predict_output_file = os.path.join(PREDICT_OUTPUT, str(data_reader.test_batch_pointer) + '_predictions.npy')
-            np.save(predict_output_file, predictions)
+            #predict_output_file = os.path.join(PREDICT_OUTPUT, str(data_reader.test_batch_pointer) + '_predictions.npy')
+            #np.save(predict_output_file, predictions)
 
+            # Load lidar_top image
+
+            im = np.array(data_reader.get_lidar_top_image(timestamps[frame]), dtype=np.uint8)
+            im_mask = np.array(255 * val_ys[i], dtype=np.uint8)
+            im_pred = np.array(255 * predict[i, :, :, 0], dtype=np.uint8)
+
+            rgb_mask_pred = cv2.cvtColor(im_pred, cv2.COLOR_GRAY2RGB)
+            rgb_mask_pred[:, :, 1:3] = 0 * rgb_mask_pred[:, :, 1:2]
+            rgb_mask_true = cv2.cvtColor(im_mask, cv2.COLOR_GRAY2RGB)
+            rgb_mask_true[:, :, 0] = 0 * rgb_mask_true[:, :, 0]
+            rgb_mask_true[:, :, 2] = 0 * rgb_mask_true[:, :, 2]
+
+            img_pred = cv2.addWeighted(rgb_mask_pred, 0.5, im, 0.5, 0)
+            img_true = cv2.addWeighted(rgb_mask_true, 0.5, im, 0.5, 0)
+
+
+            frame += 1
 if __name__ == '__main__':
     main()
 

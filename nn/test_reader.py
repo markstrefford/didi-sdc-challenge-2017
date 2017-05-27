@@ -13,15 +13,14 @@ TODO: This will evolve over time to:
 # Fix imports so we can load tracklets module! (FIXME: What's a better way?)
 import os
 import sys
+import cv2
 sys.path.append(os.path.abspath(os.path.dirname(__file__) + '/' + '../'))
 from tracklets.parse_tracklet import Tracklet, parse_xml
 from pointcloud_utils.lidar_top import draw_track_on_top
 from pointcloud_utils.timestamp_utils import get_camera_timestamp_and_index
 
 import numpy as np
-import pandas as pd
 import glob
-from sklearn.model_selection import train_test_split
 
 top_x, top_y, top_z = 400, 400, 8
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'    #GCP
@@ -33,14 +32,17 @@ DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'    #GCP
 class TestReader(object):
     def __init__(self, test_dir):
         self.test_dir = test_dir
+        self.timestamps = []
         self.load()
 
     def load(self):
         xs=[]
+        timestamps=[]
 
         self.test_batch_pointer = 0
         print ('Processing test data: {}'.format(self.test_dir))
         lidar_top_dir = os.path.join(self.test_dir, 'processed/lidar_top')
+        lidar_top_image_dir = os.path.join(self.test_dir, 'processed/lidar_top_img')
         lidar_files = sorted(glob.glob(os.path.join(lidar_top_dir, '*.npy')))
 
         frame = 0
@@ -48,10 +50,15 @@ class TestReader(object):
 
             lidar_file = os.path.join(lidar_top_dir, file)
             xs.append(lidar_file)
+
+            timestamps.append(int(os.path.basename(file).replace('.npy', '')))
             frame +=1
 
         self.num_test_samples = len(xs)
         self.test_xs = xs
+        self.test_timestamps = timestamps
+        self.lidar_top_image_dir = lidar_top_image_dir
+
         print ('TestReader.load(): Found {} testing samples'.format(self.num_test_samples))
         print (self.test_xs)
 
@@ -72,5 +79,11 @@ class TestReader(object):
         print ('load_test_batch(): batch={}, x_out.shape={}'.format(self.test_batch_pointer, x_out.shape))
         return x_out
 
+    def get_timestamps(self):
+        return self.test_timestamps
 
-
+    def get_lidar_top_image(self, timestamp):
+        filename = os.path.join(self.lidar_top_image_dir, timestamp + '.png')
+        image = cv2.imread(filename)
+        print ('get_lidar_top_image({}): image.shape={}'.format(timestamp, image.shape))
+        return image
