@@ -36,7 +36,7 @@ PREDICT_OUTPUT=os.path.join(DATA_DIR, 'images')
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Udacity Challenge Testing Script')
-    parser.add_argument('--weights', type=str, default=WEIGHTS_PATH,
+    parser.add_argument('--weights', type=str,
                         action='store', dest='weights_path', help='Path to a trained model')
     parser.add_argument('--data_dir', '--data', type=str, default=DATA_DIR,
                         action='store', dest='data_dir', help='The directory containing the testing data.')
