@@ -52,8 +52,7 @@ def main():
     args=get_arguments()
 
 
-
-    LossHistory, model = nn.top_nn(weights_path=WEIGHTS_PATH)
+    LossHistory, model = nn.top_nn(weights_path=args.weights_path)
     summary = model.summary()
     print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 
