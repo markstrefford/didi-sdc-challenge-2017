@@ -26,10 +26,10 @@ import cv2
 import numpy as np
 import pandas as pd
 import argparse
-from data_reader import DataReader
+from test_reader import TestReader
 from tracklets.generate_tracklet import *
 
-BATCH_SIZE = 8
+BATCH_SIZE = 1
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Round_1_Test_Tracklets/'
 WEIGHTS_PATH='/vol/training/logs/'
 PREDICT_OUTPUT=os.path.join(DATA_DIR, 'images')
@@ -51,57 +51,43 @@ def get_arguments():
 def main():
     args=get_arguments()
 
+    # TODO - Predict these in next iteration of code
+    length = 4.241800
+    width = 1.447800
+    height = 1.574800
 
     LossHistory, model = nn.top_nn(weights_path=args.weights_path)
     summary = model.summary()
     print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 
     print('test.py: args.data_dir={}'.format(args.data_dir))
-    data_reader = DataReader(args.data_dir)
+    data_reader = TestReader(args.data_dir)
 
-    xs, ys = data_reader.load_val_batch(batch_size=args.batch_size)
+    xs = data_reader.load_test_batch(batch_size=data_reader.num_samples)   # Get all samples
+        
     predictions = model.predict(xs, batch_size=args.batch_size)  # TODO - Move into the loop like training code
     predict_output_file = os.path.join(PREDICT_OUTPUT, 'predictions.npy')
     np.save(predict_output_file, predictions)
 
-    # TODO - Predict these in next iteration of code
-    length = 4.241800
-    width = 1.447800
-    height = 1.574800
-    t = 0
-    collection = TrackletCollection()
-    for p in predictions:
-        # print ('Predicted: {}, Actual: {}'.format(predictions[t], ys[t]))
-        # tx = p[0]
-        # ty = p[1]
-        # tz = p[2]
-        #obs_tracklet = Tracklet( object_type='Car', l=length, w=width, h=height, first_frame=t )
-        # obs_tracklet.poses = [
-        #     {'tx':tx,'ty':ty,'tz':tz,'rx':0,'ry':0,'rz':0}
-        # ]
-        # collection.tracklets.append(obs_tracklet)
-
-        # Load relevant pcl image
-        pcl_timestamp = pcl_data.ix[t].timestamp
-        pcl_image_file = os.path.join(PCL_IMAGE_PATH,str(pcl_timestamp)+'.png')
-        print ('Rendering prediction on image {}'.format(pcl_image_file))
-        pcl_image = cv2.imread(pcl_image_file)
-        img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud
-        img = pcl_image
-
-        # Merge with the prediction
-        img[:,:,2] = predictions[t,:,:,0]*255
-
-        # Render the combined image
-        #cv2.imshow('predict[0]', img)
-        #cv2.waitKey(1)
-        pcl_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_pcl.jpg')
-        cv2.imwrite(pcl_image_file, img)
-        predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p0.jpg')
-        cv2.imwrite(predict_image_file, predictions[t,:,:,0]*255)
-        # predict_image_file = os.path.join(PREDICT_OUTPUT, str(pcl_timestamp) + '_p1.jpg')
-        # cv2.imwrite(predict_image_file, predictions[t,:,:,1]*255)
-        t += 1
+    # collection = TrackletCollection()
+    # for p in predictions:
+    #
+    #     # # Load relevant pcl image
+    #     # pcl_image = cv2.imread(pcl_image_file)
+    #     # img = np.zeros((400, 400, 3))   # TODO: Is this sufficient for generating the source pointcloud
+    #     # img = pcl_image
+    #     #
+    #     # # Merge with the prediction
+    #     # img[:,:,2] = predictions[t,:,:,0]*255
+    #
+    #     # Render the combined image
+    #     #cv2.imshow('predict[0]', img)
+    #     #cv2.waitKey(1)
+    #     pcl_image_file = os.path.join(PREDICT_OUTPUT, str(frame) + '_pcl.jpg')
+    #     cv2.imwrite(pcl_image_file, img)
+    #     predict_image_file = os.path.join(PREDICT_OUTPUT, str(frame) + '_p0.jpg')
+    #     cv2.imwrite(predict_image_file, predictions[t,:,:,0]*255)
+    #     t += 1
 
     ## save
     #collection.write_xml(tracklet_file)

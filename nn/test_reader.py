@@ -75,7 +75,6 @@ class TestReader(object):
             frame +=1
 
         self.num_samples = len(xs)
-        self.num_test_samples = len(self.train_xs)
         print ('TestReader.load(): Found {} testing samples'.format(self.num_samples))
 
 
@@ -99,10 +98,7 @@ class TestReader(object):
     def load_test_batch(self, batch_size=1):
         print ('load_train_batch(): batch = {}'.format(self.train_batch_pointer))
         x_out = []
-        y_out_obj = []
-        y_out_box = []
         for i in range(0, batch_size):
-	    #print ('load_train_batch(): self.train_batch_pointer={}, i={}, self.num_train_samples={}'.format(self.train_batch_pointer,i,self.num_train_samples))
             index = (self.train_batch_pointer + i) % self.num_train_samples
             file = self.train_xs[index]
             pointcloud = np.load(file)
