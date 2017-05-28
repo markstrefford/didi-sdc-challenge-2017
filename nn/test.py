@@ -40,12 +40,16 @@ PREDICT_IMAGE_OUTPUT=os.path.join(DATA_DIR, 'images')
 # TODO: Really should do this in deep learning!!
 # TODO: Need to do this differently for more than one obstacle
 def calc_centroid(prediction):
-    coords = np.transpose(np.nonzero(prediction > 0.7))
-    min_y, max_y = min(coords[:, 0]), max(coords[:, 0])
-    min_x, max_x = min(coords[:, 1]), max(coords[:, 1])
-    centroid_x = (min_x + max_x) / 2
-    centroid_y = (min_y + max_y) / 2
-    lcent_x, lcent_y = lidar_top.top_to_lidar_coords(centroid_x, centroid_y)
+    proposal = np.nonzero(prediction)
+    if len(proposal[0]) > 0:
+        coords = np.transpose(np.nonzero(prediction > 0.7))
+        min_y, max_y = min(coords[:, 0]), max(coords[:, 0])
+        min_x, max_x = min(coords[:, 1]), max(coords[:, 1])
+        centroid_x = (min_x + max_x) / 2
+        centroid_y = (min_y + max_y) / 2
+        lcent_x, lcent_y = lidar_top.top_to_lidar_coords(centroid_x, centroid_y)
+    else:
+        lcent_x, lcent_y = 0, 0
     #  TODO - Need to determine z properly!
     return (lcent_x, lcent_y, -1)
 
