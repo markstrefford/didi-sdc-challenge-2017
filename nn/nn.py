@@ -61,7 +61,8 @@ def IOU_calc(y_true, y_pred):
     # union=tf.reduce_sum(tf.sub(usum=tf.add(logits,trn_labels),intersection=tf.mul(logits,trn_labels)))
     usum = K.sum(y_pred_f + y_true_f)
     union = K.sum(usum - intersection)
-    IoU = (2. * intersection + smooth) / (union + smooth)
+    #IoU = (2. * intersection + smooth) / (union + smooth)
+    IoU = ( intersection + smooth)  / ( union + smooth )
     return IoU
 
 
