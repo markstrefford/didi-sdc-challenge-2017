@@ -28,12 +28,27 @@ import pandas as pd
 import argparse
 from test_reader import TestReader
 from tracklets.generate_tracklet import *
+from pointcloud_utils import lidar_top
 
 BATCH_SIZE = 8
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Round_1_Test_Tracklets/19_fpc2/'
 WEIGHTS_PATH='/vol/training/logs/'
 PREDICT_OUTPUT=os.path.join(DATA_DIR, 'predictions')
 PREDICT_IMAGE_OUTPUT=os.path.join(DATA_DIR, 'images')
+
+# Get the centre of a object proposal
+# TODO: Really should do this in deep learning!!
+# TODO: Need to do this differently for more than one obstacle
+def calc_centroid(prediction):
+    coords = np.transpose(np.nonzero(prediction > 0.7))
+    min_y, max_y = min(coords[:, 0]), max(coords[:, 0])
+    min_x, max_x = min(coords[:, 1]), max(coords[:, 1])
+    centroid_x = (min_x + max_x) / 2
+    centroid_y = (min_y + max_y) / 2
+    lcent_x, lcent_y = lidar_top.top_to_lidar_coords(centroid_x, centroid_y)
+    #  TODO - Need to determine z properly!
+    return (lcent_x, lcent_y, -1)
+
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Udacity Challenge Testing Script')
@@ -56,6 +71,7 @@ def main():
     length = 4.241800
     width = 1.447800
     height = 1.574800
+    tracklet_raw = open('tracklet_raw.txt', 'w')
 
     LossHistory, model = nn.top_nn(weights_path=args.weights_path)
     summary = model.summary()
@@ -76,6 +92,7 @@ def main():
             timestamp = timestamps[frame]
             predict_output_file = os.path.join(PREDICT_OUTPUT, str(frame) + '.npy')
             np.save(predict_output_file, predictions[i])
+            tracklet_raw.write((calc_centroid(predictions[i])))
 
             im = np.array(data_reader.get_lidar_top_image(timestamp), dtype=np.uint8)
             im_pred = np.array(255 * predictions[i, :, :, 0], dtype=np.uint8)
