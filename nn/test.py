@@ -52,7 +52,7 @@ def calc_centroid(prediction):
     else:
         lcent_x, lcent_y, lcent_z = 0, 0, 0
     print ('calc_centroids(): {}, {}, {}'.format(lcent_x, lcent_y, lcent_z))
-    return (lcent_x, lcent_y, lcent_z)
+    return lcent_x, lcent_y, lcent_z
 
 
 def get_arguments():
@@ -97,7 +97,7 @@ def main():
             timestamp = timestamps[frame]
             predict_output_file = os.path.join(PREDICT_OUTPUT, str(frame) + '.npy')
             np.save(predict_output_file, predictions[i])
-            tracklet_raw.write(str(calc_centroid(predictions[i])))
+            tracklet_raw.write(str(calc_centroid(predictions[i])) + '\n')
 
             im = np.array(data_reader.get_lidar_top_image(timestamp), dtype=np.uint8)
             im_pred = np.array(255 * predictions[i, :, :, 0], dtype=np.uint8)
