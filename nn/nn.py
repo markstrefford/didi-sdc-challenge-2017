@@ -39,9 +39,33 @@ surround_x, surround_y, surround_z = 400, 8, 3 # TODO - Confirm surround_z, if z
 top_x, top_y, top_z = 400, 400, 8
 camera_x, camera_y, camera_z = 1400, 800, 3    #TODO - Get correct values here!!
 
-#TODO: Flesh this out as this is the measure from Udacity
-def IoU(pred_y, act_y):
-    return True
+# from https://github.com/jocicmarko/ultrasound-nerve-segmentation/blob/master/train.py
+def dice_coef(y_true, y_pred):
+    y_true_f = K.flatten(y_true)
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    return (2. * intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
+
+
+def dice_coef_loss(y_true, y_pred):
+    return -dice_coef(y_true, y_pred)
+
+
+# Based on https://github.com/vxy10/p5_VehicleDetection_Unet/blob/master/main_car_Unet_train_IoU.ipynb
+# Aligned with http://angusg.com/writing/2016/12/28/optimizing-iou-semantic-segmentation.html
+def IOU_calc(y_true, y_pred):
+    y_true_f = K.flatten(y_true)
+    y_pred_f = K.flatten(y_pred)
+    intersection = K.sum(y_true_f * y_pred_f)
+    usum = K.sum(y_pred_f + y_true_f)
+    union = K.eval(usum - intersection)
+    IoU = (2. * intersection + smooth) / (union + smooth)
+    print ('I={}, U={}, IoU={}'.format(intersection, union, IoU))
+    return IoU
+
+
+def IOU_calc_loss(y_true, y_pred):
+    return 1-IOU_calc(y_true, y_pred)
 
 
 # TODO: Be DRY here... lots of code repetition... can this be a single function with different parameters calling it??
@@ -70,7 +94,7 @@ def top_nn_orig(weights_path=None, b_regularizer = None, w_regularizer=None):
     ## Now split into objectness and bounding box layers
     ## TODO: Is keras.layers.merge.add the best approach here???
 
-    # Objectness (is this the center of an object or not
+    # Objectness (object proposals)
     up4obj = UpSampling2D(size=(2, 2))(conv3)
     conv4obj = Conv2D(64, (2, 2), activation='relu', padding='same')(up4obj)
     conv4obj = Dropout(0.2)(conv4obj)
@@ -82,8 +106,7 @@ def top_nn_orig(weights_path=None, b_regularizer = None, w_regularizer=None):
     merge5obj = add([conv1, conv5obj])
 
     #FIXME: Currently only 2 classes (background and obstacle)
-    conv6obj = Conv2D(2, (2, 2), activation='relu', padding='same')(merge5obj)
-    prediction_obj = Activation('softmax')(conv6obj)
+    prediction_obj = Conv2D(1, (1, 1), activation='sigmoid', padding='same')(merge5obj)
 
     # Bounding box prediction
     # Objectness (is this the center of an object or not
@@ -100,18 +123,10 @@ def top_nn_orig(weights_path=None, b_regularizer = None, w_regularizer=None):
     #FIXME: This is a regressor??? so what does/should it return...??
     # prediction_box = Conv2D(2, (2, 2), activation='relu', padding='same')(merge5box)
 
-    # Setup loss, etc. and
     # model = Model(inputs=[inputs], outputs=[prediction_obj, prediction_box])
     model = Model(inputs=[inputs], outputs=[prediction_obj])
-    sgd = SGD(lr=0.01, decay=1e-6, momentum=0.3, nesterov=False)
-
-    #FIXME: Initial attempt at loss and metrics...
-    # model.compile(optimizer=sgd,
-    #               loss=['categorical_crossentropy', 'mean_squared_error'],
-    #               metrics=['accuracy', 'mean_squared_error'])
-    model.compile(optimizer=sgd,
-                  loss=['categorical_crossentropy'],
-                  metrics=['accuracy'])
+    model.compile(optimizer=Adam(lr=1e-4),
+                  loss=IOU_calc_loss, metrics=[IOU_calc])
 
     if weights_path != None:
         print ('Loading weights from {}'.format(weights_path))
@@ -123,29 +138,6 @@ def top_nn_orig(weights_path=None, b_regularizer = None, w_regularizer=None):
 
 def camera_nn(model, num_classes, weights_path=None, w_regularizer = None, b_regularizer = None):
     return model
-
-# from https://github.com/jocicmarko/ultrasound-nerve-segmentation/blob/master/train.py
-def dice_coef(y_true, y_pred):
-    y_true_f = K.flatten(y_true)
-    y_pred_f = K.flatten(y_pred)
-    intersection = K.sum(y_true_f * y_pred_f)
-    return (2. * intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
-
-
-def dice_coef_loss(y_true, y_pred):
-    return -dice_coef(y_true, y_pred)
-
-
-# From https://github.com/vxy10/p5_VehicleDetection_Unet/blob/master/main_car_Unet_train_IoU.ipynb
-def IOU_calc(y_true, y_pred):
-    y_true_f = K.flatten(y_true)
-    y_pred_f = K.flatten(y_pred)
-    intersection = K.sum(y_true_f * y_pred_f)
-    return 2 * (intersection + smooth) / (K.sum(y_true_f) + K.sum(y_pred_f) + smooth)
-
-
-def IOU_calc_loss(y_true, y_pred):
-    return -IOU_calc(y_true, y_pred)
 
 
 def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
@@ -195,9 +187,6 @@ def top_nn(weights_path=None, b_regularizer = None, w_regularizer=None):
     conv10 = Conv2D(1, (1, 1), activation='sigmoid')(conv9)
 
     model = Model(inputs=[inputs], outputs=[conv10])
-
-    #model.compile(optimizer=Adam(lr=1e-5), loss=dice_coef_loss, metrics=[dice_coef])
-    #model.compile(optimizer=Adam(lr=1e-3), loss=dice_coef_loss, metrics=[dice_coef])
     model.compile(optimizer=Adam(lr=1e-4),
                   loss=IOU_calc_loss, metrics=[IOU_calc])
 
