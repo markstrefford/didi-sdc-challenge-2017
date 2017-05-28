@@ -56,11 +56,12 @@ def dice_coef_loss(y_true, y_pred):
 def IOU_calc(y_true, y_pred):
     y_true_f = K.flatten(y_true)
     y_pred_f = K.flatten(y_pred)
+    # inter=tf.reduce_sum(tf.mul(logits,trn_labels))
     intersection = K.sum(y_true_f * y_pred_f)
+    # union=tf.reduce_sum(tf.sub(usum=tf.add(logits,trn_labels),intersection=tf.mul(logits,trn_labels)))
     usum = K.sum(y_pred_f + y_true_f)
-    union = K.eval(usum - intersection)
+    union = K.sum(usum - intersection)
     IoU = (2. * intersection + smooth) / (union + smooth)
-    print ('I={}, U={}, IoU={}'.format(intersection, union, IoU))
     return IoU
 
 
