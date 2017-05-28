@@ -23,7 +23,8 @@ from keras.callbacks import Callback, TensorBoard, EarlyStopping, ModelCheckpoin
 
 # TODO: Remove what's not needed here
 #BATCH_SIZE = 32
-BATCH_SIZE = 1
+BATCH_SIZE = 2
+VAL_BATCH_SIZE = 32
 #DATA_DIR = '/vol/didi/dataset2/Tracklets/1/2/'
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets/'
 LOGDIR = '/vol/training/logs'
@@ -74,8 +75,8 @@ def main():
 
     start_step = 0
     LossHistory, model = nn.top_nn()
-    summary = model.summary()
-    print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
+    #summary = model.summary()
+    #print (summary)     # TODO: Write to disk together with diagram (see keras.model_to_dot)
 
     #TODO: Put these into nn.py and parameterise
     early_stop = EarlyStopping(monitor='val_loss', min_delta=0.001, patience=10, mode='min', verbose=1)
@@ -93,7 +94,7 @@ def main():
         print ('{}/{}: Training loss: {}'.format(i, start_step + args.num_steps, train_error))
 
         if i % 10 == 0:
-            xs, ys = data_reader.load_val_batch(batch_size=args.batch_size)
+            xs, ys = data_reader.load_val_batch(batch_size=VAL_BATCH_SIZE)
             val_error = model.test_on_batch(xs, ys)
             print ('{}/{}: Validation loss: {}'.format(i, start_step + args.num_steps, val_error))
 
