@@ -76,7 +76,7 @@ def main():
     length = 4.241800
     width = 1.447800
     height = 1.574800
-    tracklets = []
+    tracklet_raw = open('tracklet_raw.txt', 'w')
 
     LossHistory, model = nn.top_nn(weights_path=args.weights_path)
     summary = model.summary()
@@ -97,7 +97,8 @@ def main():
             timestamp = timestamps[frame]
             predict_output_file = os.path.join(PREDICT_OUTPUT, str(frame) + '.npy')
             np.save(predict_output_file, predictions[i])
-            tracklets.append(calc_centroid(predictions[i]))
+            tracklet = calc_centroid(predictions[i])
+            tracklet_raw.write(' '.join([str(number) for number in tracklet]) + '\n')
 
             im = np.array(data_reader.get_lidar_top_image(timestamp), dtype=np.uint8)
             im_pred = np.array(255 * predictions[i, :, :, 0], dtype=np.uint8)
@@ -110,8 +111,6 @@ def main():
             cv2.imwrite(file, img_pred)
 
             frame += 1
-            
-    np.savetxt('data/tracklet_raw.txt', tracklets, delimiter=',')
 
 if __name__ == '__main__':
     main()

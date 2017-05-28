@@ -56,25 +56,26 @@ lidar_files = np.array([int(lidar.split('.')[0]) for lidar in sorted(os.listdir(
 
 #tracklet_raw = [line.strip() for line in open(track_raw)]
 #tracklet_raw = np.array([[float(number) for number in line.split(',')] for line in tracklet_raw])
-tracklet_raw =
+tracklet_raw = np.loadtxt(track_raw, dtype=str)
+num_tracklets = tracklet_raw.shape[0]
+print ('Found {} predicted tracklets'.format(num_tracklets))
 
-frame=0
+
 with open('data/tracklet_preds.xml', 'w') as tracklet:
     tracklet.write(header)
 
-    lidar_files = sorted(os.listdir(lidar_dir))
 
-    tracklet.write('			<count>' + str(len(lidar_files)) + '</count>\n')
+    tracklet.write('			<count>' + str(num_tracklets) + '</count>\n')
     tracklet.write('			<item_version>2</item_version>\n')
 
-    for image in image_files:
+    for frame in range(num_tracklets):
 
         """
         Create an xml entry for each image
         """
+        print (tracklet_raw[frame])
         item = itemize(tracklet_raw[frame])
 
         tracklet.write(item)
-        frame +=1
 
     tracklet.write(footer)
