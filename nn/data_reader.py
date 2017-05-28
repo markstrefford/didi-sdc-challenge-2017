@@ -79,7 +79,6 @@ class DataReader(object):
             tracklet_file = os.path.join(training_dir, 'tracklet_labels.xml')
             lidar_top_dir = os.path.join(training_dir, 'processed/lidar_top')
 
-
             camera_data = pd.read_csv(camera_csv)  # ['timestamp']
             obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
             print ('Loaded {} tracklets '.format(len(tracks)))
@@ -202,7 +201,6 @@ class DataReader(object):
                 index = (self.val_batch_pointer + i) % self.num_val_samples
                 file = self.val_xs[index]
                 pointcloud = np.load(file)
-                x_out.append(pointcloud)
                 # FIXME: Prediction code is single object only at the moment
                 obj_size = self.val_ys[index][0]
                 obj_track = self.val_ys[index][1]
@@ -216,8 +214,8 @@ class DataReader(object):
                     y_out_box.append(y_box)
                     got_sample = 1
 
-        self.val_batch_pointer += batch_size
         x_out = np.array(x_out, dtype=np.uint8)
         y_out_obj = np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(batch_size,400,400,1)
+        self.val_batch_pointer += batch_size
         return x_out, y_out_obj
 
