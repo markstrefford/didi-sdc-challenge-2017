@@ -27,7 +27,7 @@ import numpy as np
 import pandas as pd
 import argparse
 from test_reader import TestReader
-from tracklets.generate_tracklet import *
+#from tracklets.generate_tracklet import *
 from pointcloud_utils import lidar_top
 
 BATCH_SIZE = 8
