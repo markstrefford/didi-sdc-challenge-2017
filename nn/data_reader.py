@@ -82,10 +82,10 @@ class DataReader(object):
 
             camera_data = pd.read_csv(camera_csv)  # ['timestamp']
             obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
-            print ('Loaded {} tracklets '.len(format(tracks)))
+            print ('Loaded {} tracklets '.format(len(tracks)))
 
             lidar_files = sorted(glob.glob(os.path.join(lidar_top_dir, '*.npy')))
-
+            print ('Found {} lidar files'.format(len(lidar_files)))
             frame = 0
             for file in lidar_files:
                 if (frame >= bag_info.start_frame) and ( frame < bag_info.end_frame or bag_info.end_frame == -1):
