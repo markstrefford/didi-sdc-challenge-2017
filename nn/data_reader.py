@@ -28,6 +28,7 @@ DATA_DIR = '/vol/dataset2/Didi-Release-2/Tracklets'    #GCP
 #DATA_DIR = '/vol/didi/dataset2/Tracklets'               #Mac
 RANDOM_STATE = 202
 VALID_PERCENT = .25
+RANDOM_THRESHOLD = 0.9   # Only use 10% of data that has no obstacle in it!!
 
 # Get camera timestamp and index closest to the pointcloud timestamp
 #TODO Create a utility function
@@ -81,7 +82,7 @@ class DataReader(object):
 
             camera_data = pd.read_csv(camera_csv)  # ['timestamp']
             obj_size, tracks = get_obstacle_from_tracklet(tracklet_file)
-            #print ('Loaded tracklets {}'.format(tracks))
+            print ('Loaded {} tracklets '.len(format(tracks)))
 
             lidar_files = sorted(glob.glob(os.path.join(lidar_top_dir, '*.npy')))
 
@@ -163,21 +164,28 @@ class DataReader(object):
     # TODO - These 2 functions are not DRY!!!
 
     def load_train_batch(self, batch_size=1):
-        print ('load_train_batch(): batch = {}'.format(self.train_batch_pointer))
         x_out = []
         y_out_obj = []
         y_out_box = []
         for i in range(0, batch_size):
-	    #print ('load_train_batch(): self.train_batch_pointer={}, i={}, self.num_train_samples={}'.format(self.train_batch_pointer,i,self.num_train_samples))
-            index = (self.train_batch_pointer + i) % self.num_train_samples
-            file = self.train_xs[index]
-            pointcloud = np.load(file)
-            x_out.append(pointcloud)
-            # FIXME: Prediction code is single object only at the moment
-            obj_size = self.train_ys[index][0]
-            obj_track = self.train_ys[index][1]
-            y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
-            y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
+            got_sample = 0      # Repeat, skipping over empty data, until we fill up a batch
+            while got_sample == 0:
+                index = (self.train_batch_pointer + i) % self.num_train_samples
+                file = self.train_xs[index]
+                pointcloud = np.load(file)
+                # FIXME: Prediction code is single object only at the moment
+                obj_size = self.train_ys[index][0]
+                obj_track = self.train_ys[index][1]
+                y_obj = self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track))    # Object prediction output (sphere??)
+                y_box = self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track))    # Output of prediction bounding box
+
+                y_obj_zero = np.nonzero(y_obj)
+                if len(y_obj_zero[0]) > 0 or np.random.rand(1) > RANDOM_THRESHOLD:
+                    x_out.append(pointcloud)
+                    y_out_obj.append(y_obj)
+                    y_out_box.append(y_box)
+                    got_sample = 1
+
         self.train_batch_pointer += batch_size
         x_out = np.array(x_out, dtype=np.uint8)
         y_out_obj = np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(batch_size,400,400,1)
@@ -189,15 +197,25 @@ class DataReader(object):
         y_out_obj = []
         y_out_box = []
         for i in range(0, batch_size):
-            index = (self.val_batch_pointer + i) % self.num_val_samples
-            file = self.val_xs[index]
-            pointcloud = np.load(file)
-            x_out.append(pointcloud)
-            # FIXME: Prediction code is single object only at the moment
-            obj_size = self.val_ys[index][0]
-            obj_track = self.val_ys[index][1]
-            y_out_obj.append(self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track)))    # Object prediction output (sphere??)
-            y_out_box.append(self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track)))    # Output of prediction bounding box
+            got_sample = 0  # Repeat, skipping over empty data, until we fill up a batch
+            while got_sample == 0:
+                index = (self.val_batch_pointer + i) % self.num_val_samples
+                file = self.val_xs[index]
+                pointcloud = np.load(file)
+                x_out.append(pointcloud)
+                # FIXME: Prediction code is single object only at the moment
+                obj_size = self.val_ys[index][0]
+                obj_track = self.val_ys[index][1]
+                y_obj = self.convert_image_to_classes(self._predict_obj_y(obj_size, obj_track))    # Object prediction output (sphere??)
+                y_box = self.convert_image_to_classes(self._predict_box_y(obj_size, obj_track))    # Output of prediction bounding box
+
+                y_obj_zero = np.nonzero(y_obj)
+                if len(y_obj_zero[0]) > 0 or np.random.rand(1) > RANDOM_THRESHOLD:
+                    x_out.append(pointcloud)
+                    y_out_obj.append(y_obj)
+                    y_out_box.append(y_box)
+                    got_sample = 1
+
         self.val_batch_pointer += batch_size
         x_out = np.array(x_out, dtype=np.uint8)
         y_out_obj = np.array(y_out_obj, dtype=np.uint8)[:,:,:,0].reshape(batch_size,400,400,1)
