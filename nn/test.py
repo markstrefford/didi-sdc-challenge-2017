@@ -32,7 +32,8 @@ from tracklets.generate_tracklet import *
 BATCH_SIZE = 8
 DATA_DIR = '/vol/dataset2/Didi-Release-2/Round_1_Test_Tracklets/19_fpc2/'
 WEIGHTS_PATH='/vol/training/logs/'
-PREDICT_OUTPUT=os.path.join(DATA_DIR, 'images')
+PREDICT_OUTPUT=os.path.join(DATA_DIR, 'predictions')
+PREDICT_IMAGE_OUTPUT=os.path.join(DATA_DIR, 'images')
 
 def get_arguments():
     parser = argparse.ArgumentParser(description='Udacity Challenge Testing Script')
@@ -40,7 +41,7 @@ def get_arguments():
                         action='store', dest='weights_path', help='Path to a trained model')
     parser.add_argument('--data_dir', '--data', type=str, default=DATA_DIR,
                         action='store', dest='data_dir', help='The directory containing the testing data.')
-    parser.add_argument('--predict_dir', '--predict', type=str, default=PREDICT_OUTPUT,
+    parser.add_argument('--predict_dir', '--predict', type=str, default=PREDICT_IMAGE_OUTPUT,
                         action='store', dest='predict_dir', help='The directory to write predicted images to.')
     parser.add_argument('--batch_size', type=int, default=BATCH_SIZE,
                         action='store', dest='batch_size', help='Number of [pointcloud] samples in batch.')
@@ -73,8 +74,8 @@ def main():
 
         for i in range(args.batch_size):
             timestamp = timestamps[frame]
-            #predict_output_file = os.path.join(PREDICT_OUTPUT, str(data_reader.test_batch_pointer) + '_predictions.npy')
-            #np.save(predict_output_file, predictions)
+            predict_output_file = os.path.join(PREDICT_OUTPUT, str(frame) + '.npy')
+            np.save(predict_output_file, predictions[i])
 
             im = np.array(data_reader.get_lidar_top_image(timestamp), dtype=np.uint8)
             im_pred = np.array(255 * predictions[i, :, :, 0], dtype=np.uint8)
@@ -83,11 +84,10 @@ def main():
             rgb_mask_pred[:, :, 1:3] = 0 * rgb_mask_pred[:, :, 1:2]
 
             img_pred = cv2.addWeighted(rgb_mask_pred, 0.5, im, 0.5, 0)
-            file = os.path.join(PREDICT_OUTPUT, str(frame) + '_' + str(timestamp) + '.png')
+            file = os.path.join(PREDICT_IMAGE_OUTPUT, str(frame) + '_' + str(timestamp) + '.png')
             cv2.imwrite(file, img_pred)
 
             frame += 1
-
 
 if __name__ == '__main__':
     main()
