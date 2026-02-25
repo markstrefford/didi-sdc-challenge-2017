@@ -2,7 +2,7 @@
 
 ## Results
 
-This code base achieved 14th out of 2000 times (top 1%) !!
+This code base achieved 14th out of 2000 teams (top 1%) !!
 
 
 ## Dependencies
