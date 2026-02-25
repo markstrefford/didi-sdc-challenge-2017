@@ -1,8 +1,13 @@
 # Team Timelaps: Udacity Challenge 2017
 
-This code is designed to work with the data provided by Udacity for the [2017 Self Driving Car Challenge](https://github.com/udacity/didi-competition). 
+## Results
+
+This code base achieved 14th out of 2000 times (top 1%) !!
+
 
 ## Dependencies
+
+This code is designed to work with the data provided by Udacity for the [2017 Self Driving Car Challenge](https://github.com/udacity/didi-competition). 
 
 This code has been developed on a mix of OS/X Sierra and Ubuntu 16.04 LTS hosted on a MacBook Pro, a VirtualBox VM and run on Google Cloud Platform.
 
